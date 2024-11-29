@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34714.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AOCPractice", "AOCPractice.csproj", "{2FC1D6C8-D694-4FC3-9CE6-34E87BB8315B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2FC1D6C8-D694-4FC3-9CE6-34E87BB8315B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FC1D6C8-D694-4FC3-9CE6-34E87BB8315B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FC1D6C8-D694-4FC3-9CE6-34E87BB8315B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FC1D6C8-D694-4FC3-9CE6-34E87BB8315B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {14169D5C-ED17-4147-B57E-7D8B15A33D8A}
+	EndGlobalSection
+EndGlobal
