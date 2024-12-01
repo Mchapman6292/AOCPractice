@@ -30,17 +30,6 @@ namespace AOCPractice.InputMappers
             DigitRecords = CreateDigitRecordsFromInput(AocInput.FullInputString);
         }
 
-        public void ControllerMapAllRecords(string inputString)
-        {
-            CharRecords = CreateCharRecordsFromInput(inputString);
-            DigitRecords = CreateDigitRecordsFromInput(inputString);
-
-            int charRecCount = CharRecords.Count();
-            int digRecCount = DigitRecords.Count();
-
-            Console.WriteLine($" CharRecords Created : {charRecCount}, DigitRecords Created : {digRecCount}.");
-
-        }
 
         // 140 chars per line
 
@@ -49,11 +38,17 @@ namespace AOCPractice.InputMappers
         public IEnumerable<DigitRecord> CreateDigitRecordsFromInput(string inputString)
         {
             var digitMatches = Regex.Matches(inputString, @"\d+");
-            return digitMatches.Cast<Match>().Select(m => new DigitRecord
-            {
-                Value = int.Parse(m.Value),
-                StartIndex = m.Index,
-                EndIndex = m.Index + m.Length - 1
+            return digitMatches.Cast<Match>().Select(m => {
+                int startIndex = m.Index;
+                int endIndex = Math.Max(m.Index + m.Length - 1, m.Index);
+
+                return new DigitRecord
+                {
+                    Value = int.Parse(m.Value),
+                    StartIndex = startIndex,
+                    EndIndex = endIndex,
+                    AllIndexes = Enumerable.Range(startIndex, endIndex - startIndex + 1).ToList()
+                };
             });
         }
 

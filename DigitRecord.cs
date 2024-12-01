@@ -6,24 +6,20 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode.DigitRecords
 {
-   public class DigitRecord
+    public class DigitRecord
     {
-        public int Value;
-        public int StartIndex;
-        public int EndIndex;
-        bool _isValid = false;
+        public int Value { get; set; } = int.MinValue;
+        public int StartIndex { get; set; } = int.MaxValue;
+        public int EndIndex { get; set; } = int.MaxValue;
+
+        public List<int> AllIndexes { get; set; } = new List<int>();
+        public bool IsAdjacent { get; set; } = false;
 
 
 
-        public bool IsValid
+        public List<int> GetAllIndices()
         {
-            get => _isValid;
-            private set => _isValid = value;
-        }
-
-        public void SetValid(bool value)
-        {
-            IsValid = value;
+            return Enumerable.Range(StartIndex, EndIndex - StartIndex + 1).ToList();
         }
     }
 }

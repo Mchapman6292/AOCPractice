@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AdventOfCode.CharRecords;
+﻿using AdventOfCode.CharRecords;
 using AdventOfCode.DigitRecords;
-using System.Text.RegularExpressions;
-using System.Linq;
-using  AOCInputs;
-using AOCPractice.InputMappers;
+using AOCInputs;
 using AOCPractice.AdjacentServices;
+using AOCPractice.AppLoggers;
+using AOCPractice.InputMappers;
 
 
 namespace AdventOfCode.InputMappers
@@ -19,28 +13,49 @@ namespace AdventOfCode.InputMappers
         // Handle checking first and last array where we only check the next/previous array
         //
 
+
+
         public char[] Symbols => new[] { '*', '+', '-', '/', '@', '#', '$', '=', '%', '&' };
 
         static void Main(string[] args)
         {
             AOCInput aocInput = new AOCInput();
             InputMapper inputMapper = new InputMapper(aocInput);
-            AdjacentService adjacentService = new AdjacentService(inputMapper,aocInput);
+            AppLogger applogger = new AppLogger();
+            AdjacentService adjacentService = new AdjacentService(inputMapper,aocInput, applogger);
+  
 
             string inputString = aocInput.FullInputString;
 
-
-            inputMapper.ControllerMapAllRecords(inputString);
-
-
-            IEnumerable<CharRecord> charRecords = adjacentService.CharRecords;
-            IEnumerable<DigitRecord> digitRecords = adjacentService.DigitRecords;
+            string testString = aocInput.TestString;
 
 
-            adjacentService.GetAllAdjacentDigitRecords(charRecords, digitRecords);
 
 
-            int total = adjacentService.Total;
+            IEnumerable<CharRecord> charRecords = inputMapper.CreateCharRecordsFromInput(testString);
+
+            IEnumerable<DigitRecord> digitRecords = inputMapper.CreateDigitRecordsFromInput(testString);
+
+            adjacentService.UpdateAdjacentDigitRecords(charRecords, digitRecords);
+
+
+            applogger.LogRecord<CharRecord>(charRecords);
+            applogger.LogRecord<DigitRecord> (digitRecords);
+
+
+
+            int digitRecordCount = digitRecords.Count();
+
+            int isAdjacentCount = digitRecords.Count(d => d.IsAdjacent);
+
+
+
+
+            applogger.Info($"Total number of DigitRecords: {digitRecordCount} , number of adjacent records: {isAdjacentCount}.");   
+
+
+
+            int total = adjacentService.CalculateTotal(digitRecords);
 
 
             Console.WriteLine($"Total : {total}");

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,22 +9,10 @@ namespace AdventOfCode.CharRecords
 {
     public class CharRecord
     {
-        public char Symbol;
-        public int Index;
-        private bool _isChecked = false;
+        public char? Symbol { get; set; } = null;
+        public int Index { get; set; } = int.MaxValue;
+        public bool isChecked { get; set; } =  false;
 
-
-
-        public bool IsChecked
-        {
-            get => _isChecked;
-            private set => _isChecked = value;
-        }
-
-        public void SetChecked(bool value)
-        {
-            IsChecked = value;
-        }
     }
 
 }

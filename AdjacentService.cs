@@ -8,6 +8,8 @@ using AdventOfCode.DigitRecords;
 using AOCInputs;
 using AOCPractice.InputMappers;
 using System.Reflection.Metadata.Ecma335;
+using AOCPractice.AppLoggers;
+using Serilog.Core;
 
 namespace AOCPractice.AdjacentServices
 {
@@ -21,31 +23,16 @@ namespace AOCPractice.AdjacentServices
         // Define regular rules first and then build edge cases
         // Need to handle cases where symbol is found at the start/end of the line. 
         // Do we need to add numbers that are adjacent to two symbols twice??
+        // Numbers that are broken up by a symbol
+        
 
-        private IEnumerable<CharRecord> _charRecords;
-        private IEnumerable<DigitRecord> _digitRecords;
+        private readonly AppLogger _appLogger;
 
         private InputMapper _inputMapper;
 
         private AOCInput _aocInput;
 
 
-
-        public IEnumerable<CharRecord> CharRecords
-        {
-            get { return _charRecords; }
-            private set { _charRecords = value; }
-        }
-
-        public IEnumerable<DigitRecord> DigitRecords
-        {
-            get { return _digitRecords; }
-            private set { _digitRecords = value; }
-        }
-
-
-
-        public int Total = 0;
 
         public int CurrentIndex { get; set; }
 
@@ -70,62 +57,72 @@ namespace AOCPractice.AdjacentServices
         public int BottomIndex => CurrentIndex + 140;
         public int BottomRightIndex => CurrentIndex + 141;
 
-        public AdjacentService(InputMapper inputMapper, AOCInput aocInput)
+        public AdjacentService(InputMapper inputMapper, AOCInput aocInput, AppLogger logger)
         {
             _inputMapper = inputMapper;
-            _charRecords = inputMapper.CharRecords;
-            _digitRecords = inputMapper.DigitRecords;
             _aocInput = aocInput;
+            _appLogger = logger;
 
         }
 
 
-
-
-
-
-
-
-        public void GetAllAdjacentDigitRecords(IEnumerable<CharRecord> charRecords, IEnumerable<DigitRecord> digitRecords)
+        public void UpdateAdjacentDigitRecords(IEnumerable<CharRecord> charRecords, IEnumerable<DigitRecord> digitRecords)
         {
+
+            List<DigitRecord> result = new List<DigitRecord>(); 
+
             foreach (var charRecord in charRecords)
             {
-                if (charRecord.IsChecked)
-                {
-                    continue;
-                }
+                charRecord.isChecked = true;
 
                 List<int> positionsToCheck = CalculateIndexesToCheck(charRecord);
 
+                _appLogger.Info($" Indexes to check for charRecord: {charRecord.Symbol}, charRecordIndex: {charRecord.Index}.");
+                _appLogger.LogList(positionsToCheck);
+
+
                 foreach (var digitRecord in digitRecords)
                 {
-                    if(digitRecord.IsValid == true) 
+                    
+
+                    for (int i = digitRecord.StartIndex; i <= digitRecord.EndIndex; i++)
                     {
-                        continue;
+                        if (positionsToCheck.Contains(i))
+                        {
+                            digitRecord.IsAdjacent = true;
+                            break;
+                        }
+                        
+
+                        if (digitRecord.StartIndex == int.MaxValue)
+                        {
+                            _appLogger.Info($" StartIndex not set for {digitRecord.Value}, startIndex: {digitRecord.StartIndex}.");
+                        }
+                        else if (digitRecord.EndIndex == int.MaxValue)
+                        {
+                            _appLogger.Info($" EndIndex not set for {digitRecord.Value} EndIndex: ({digitRecord.EndIndex}).");
+                        }
                     }
-                    if (positionsToCheck.Contains(digitRecord.StartIndex) || positionsToCheck.Contains(digitRecord.EndIndex))
-                    {
-                        digitRecord.SetValid(true);
-                        Console.WriteLine($" digitRecord {digitRecord.Value} set to true. StartIndex: {digitRecord.StartIndex}, EndIndex: {digitRecord.EndIndex}.");
-                    }
-                }
+                } 
             }
         }
 
 
 
-        public void CalculateTotal(IEnumerable<DigitRecord> digitRecords)
+
+        public int CalculateTotal(IEnumerable<DigitRecord> digitRecords)
         {
+            int total = 0;
 
             foreach(var digitRecord in digitRecords)
             {
-                if (digitRecord.IsValid)
+                if (digitRecord.IsAdjacent)
                 {
-                    Total += digitRecord.Value;
-                    Console.WriteLine($"New Total : {Total}.");
+                    total += digitRecord.Value;
+                    _appLogger.Info($"New Total : {total}.");
                 }
             }
-            
+            return total;
         }
 
 
@@ -134,9 +131,21 @@ namespace AOCPractice.AdjacentServices
         public List<int> CalculateIndexesToCheck(CharRecord currentRecord)
         {
 
+            if(currentRecord == null || currentRecord.Index == int.MaxValue || currentRecord.Symbol == null)
+            {
+                _appLogger.Info($"currentRecord property not set Index: {currentRecord.Index}, Symbol: {currentRecord.Symbol}, isChecked: {currentRecord.isChecked}.");
+                throw new ArgumentNullException($"currentRecord property not set Index: {currentRecord.Index}, Symbol: {currentRecord.Symbol}, isChecked: {currentRecord.isChecked}.");
+            }
+
+            _appLogger.Info($"currentRecord: Index: {currentRecord.Index}, Symbol: {currentRecord.Symbol}, isChecked: {currentRecord.isChecked}.");
+
 
             int currentIndex = currentRecord.Index;
-            var indexesToCheck = new List<int>();
+
+
+            List<int> indexesToCheck = new List<int>();
+            
+         
             int[] allDirections = { -141, -140, -139, -1, 1, 139, 140, 141 };
             int[] firstPositionDirections = { 1, 140, 141 };
             int[] secondPositionDirections = { -1, 1, 139, 140, 141 };
@@ -179,6 +188,9 @@ namespace AOCPractice.AdjacentServices
             }
 
             indexesToCheck.AddRange(directionsToUse.Select(d => currentIndex + d));
+
+            _appLogger.LogList(indexesToCheck);
+            
             return indexesToCheck;
         }
     }
