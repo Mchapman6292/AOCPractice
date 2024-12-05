@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34714.143
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AOCPractice", "AOCPractice.csproj", "{2FC1D6C8-D694-4FC3-9CE6-34E87BB8315B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode", "AdventOfCode.csproj", "{2FC1D6C8-D694-4FC3-9CE6-34E87BB8315B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppLogger", "..\AppLogger\AppLogger.csproj", "{2F5724FD-A11F-4D54-BD6E-357AE1C4D9A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{2FC1D6C8-D694-4FC3-9CE6-34E87BB8315B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FC1D6C8-D694-4FC3-9CE6-34E87BB8315B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FC1D6C8-D694-4FC3-9CE6-34E87BB8315B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F5724FD-A11F-4D54-BD6E-357AE1C4D9A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F5724FD-A11F-4D54-BD6E-357AE1C4D9A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F5724FD-A11F-4D54-BD6E-357AE1C4D9A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F5724FD-A11F-4D54-BD6E-357AE1C4D9A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

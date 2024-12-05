@@ -7,9 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AOCPractice.AppLoggers
+namespace AdventOfCode._2023.Day03
 {
-
     public class AppLogger
     {
         private ILogger _logger;
@@ -50,10 +49,10 @@ namespace AOCPractice.AppLoggers
             File.WriteAllText(@"C:\Users\mchap\source\repos\AOCPractice\AOCDay4Part1.log", string.Empty);
             CreateLogger();
         }
-    
 
 
-            
+
+
         public void LogList(List<Char> items)
         {
             if (!items.Any())
@@ -133,4 +132,5 @@ namespace AOCPractice.AppLoggers
         public void Info(string message, params object[] propertyValues) => _logger.Information(message, propertyValues);
     }
 }
+
 

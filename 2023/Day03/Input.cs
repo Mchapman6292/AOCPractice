@@ -1,15 +1,74 @@
-﻿namespace AOCInputs;
+﻿using System.IO;
 
-public class AOCInput
+namespace AOCInputs;
+
+
+
+public class Input
 {
 
 
 
-    public string TestString = @"
-.......855.442......190..................................969..........520.......59.............................................172..........
-.......................-....@...21...........971........................*..............965.......577=..........316..465*169.................
-";
+    public List<Char> GetAllCharsFromString(string inputString)
+    {
+        return inputString.Where(c => !char.IsDigit(c) &&
+                                      c != '.' &&
+                                      !char.IsWhiteSpace(c) &&
+                                      c != '\r' &&
+                                      c != '\n')
+                            .Distinct()
+                            .ToList();
+    }
 
+
+    public List<Char> GetAllCharsAndSpaceFromString(string inputString)
+    {
+        return inputString.Where(c => !char.IsDigit(c) &&
+                                      c != '.' &&
+                                       !char.IsWhiteSpace(c))
+                            .Distinct()
+                            .ToList();
+    }
+
+    public List<(int start, int length)> GetLineIndexes(string inputString)
+    {
+        var lines = new List<(int start, int length)>();
+        int currentStart = 0;
+
+        for (int i = 0; i < inputString.Length; i++)
+        {
+            if (i < inputString.Length - 1 && inputString[i] == '\r' && inputString[i + 1] == '\n')
+            {
+                lines.Add((currentStart, i - currentStart));
+                currentStart = i + 2;
+                i++;
+            }
+            else if (inputString[i] == '\n')
+            {
+                lines.Add((currentStart, i - currentStart));
+                currentStart = i + 1;
+            }
+        }
+
+        if (currentStart < inputString.Length)
+        {
+            lines.Add((currentStart, inputString.Length - currentStart));
+        }
+
+        return lines;
+    }
+
+
+
+
+
+
+
+
+    public string TestString = @".......855.442......190..................................969..........520.......59.............................................172..........
+.......................-....@...21...........971........................*..............965.......577=..........316..465*169.................
+........881.......881....635......*..........*.............%.577.....864.......873.........................742...*...............714..244...
+.......*..../..................602......351...423....939.906...*.........899..-..........833..60..%....965...*....309......43......*.*......";
 
 
 

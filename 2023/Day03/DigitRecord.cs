@@ -1,4 +1,5 @@
 ﻿using System;
+using Serilog;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,5 +22,12 @@ namespace AdventOfCode.DigitRecords
         {
             return Enumerable.Range(StartIndex, EndIndex - StartIndex + 1).ToList();
         }
+
+
+        public string ReturnIndexesAsString()
+        {
+            return string.Join(", ", AllIndexes);
+        }
+
     }
 }
