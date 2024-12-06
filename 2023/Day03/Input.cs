@@ -6,9 +6,6 @@ namespace AOCInputs;
 
 public class Input
 {
-
-
-
     public List<Char> GetAllCharsFromString(string inputString)
     {
         return inputString.Where(c => !char.IsDigit(c) &&

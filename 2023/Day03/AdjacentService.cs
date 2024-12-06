@@ -10,6 +10,7 @@ using System.Reflection.Metadata.Ecma335;
 using AOCPractice.AppLoggers;
 using Serilog.Core;
 using System.Text.RegularExpressions;
+using AdventOfCode._2023.Day03;
 
 namespace AOCPractice.AdjacentServices
 {
@@ -26,7 +27,7 @@ namespace AOCPractice.AdjacentServices
         // Numbers that are broken up by a symbol
         
 
-        private readonly AppLogger _appLogger;
+        private readonly Day3Logger _appLogger;
 
         private Input _aocInput;
 
@@ -38,7 +39,7 @@ namespace AOCPractice.AdjacentServices
 
 
 
-        public AdjacentService( Input aocInput, AppLogger logger)
+        public AdjacentService( Input aocInput, Day3Logger logger)
         {
             _aocInput = aocInput;
             _appLogger = logger;
@@ -138,27 +139,6 @@ namespace AOCPractice.AdjacentServices
         }
 
 
-
-
-
-
-
-
-        public int CalculateTotal(List<DigitRecord> digitRecords)
-        {
-            int total = 0;
-
-            foreach(var digitRecord in digitRecords)
-            {
-                if (digitRecord.IsAdjacent)
-                {
-                    total += digitRecord.Value;
-                    _appLogger.Info($"New Total : {total}.");
-                }
-            }
-            return total;
-        }
-
         // Each new line adds +2 to index count due to \r & \n
 
 
@@ -220,6 +200,22 @@ namespace AOCPractice.AdjacentServices
         }
 
 
+
+        public int CalculateTotal(List<DigitRecord> digitRecords)
+        {
+            int total = 0;
+
+            foreach (var digitRecord in digitRecords)
+            {
+                if (digitRecord.IsAdjacent)
+                {
+                    total += digitRecord.Value;
+                    _appLogger.Info($"New Total : {total}.");
+                }
+            }
+            return total;
+        }
+
         public int calculateGearTotal(List<CharRecord> gearRecords)
         {
             int total = 0;
@@ -231,6 +227,8 @@ namespace AOCPractice.AdjacentServices
             }
             return total;
         }
+
+
    
     }
 }

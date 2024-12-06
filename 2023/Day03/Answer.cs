@@ -1,37 +1,29 @@
 ﻿using AdventOfCode.CharRecords;
 using AdventOfCode.DigitRecords;
-using AOCInputs;
 using AOCPractice.AdjacentServices;
-using AOCPractice.AppLoggers;
-using Microsoft.AspNetCore.Identity.Data;
-using System.Security.Cryptography.X509Certificates;
+using System;
+
+using AOCInputs;
 
 
-namespace AdventOfCode.InputMappers
+namespace AdventOfCode._2023.Day03
 {
-    class Program
+    public class Answer
     {
-        // Handle checking first and last array where we only check the next/previous array
-        //Do not count numbers twice if they are adjacent to two different symbols.
 
 
-
-        public char[] Symbols => new[] { '*', '+', '-', '/', '@', '#', '$', '=', '%', '&' };
-
-
-        static void Main(string[] args)
+        public void CalculateAnswer()
         {
+
             Input aocInput = new Input();
-            AppLogger applogger = new AppLogger();
+            Day3Logger appLogger = new Day3Logger();
 
-            AdjacentService adjacentService = new AdjacentService(aocInput, applogger);
+            AdjacentService adjacentService = new AdjacentService(aocInput, appLogger);
 
 
 
-            // Part 1
-
-            applogger.ClearLog();
-            string inputString = aocInput.FullInputString;
+            appLogger.ClearLog();
+                string inputString = aocInput.FullInputString;
             string testString = aocInput.TestString;
 
 
@@ -69,9 +61,9 @@ namespace AdventOfCode.InputMappers
 
             adjacentService.UpdateAdjacentDigitRecords(charRecords, digitRecords);
 
-            // Calculate answer 
+                // Calculate answer 
 
-            int part1Total = adjacentService.CalculateTotal(digitRecords);
+                int part1Total = adjacentService.CalculateTotal(digitRecords);
 
 
 
@@ -101,7 +93,7 @@ namespace AdventOfCode.InputMappers
 
             int isAdjacentCount = digitRecords.Count(d => d.IsAdjacent);
 
-            applogger.Info($"Total number of DigitRecords: {digitRecordCount} , number of adjacent records: {isAdjacentCount}.");
+            appLogger.Info($"Total number of DigitRecords: {digitRecordCount} , number of adjacent records: {isAdjacentCount}.");
 
 
             int total = adjacentService.CalculateTotal(digitRecords);
@@ -122,15 +114,15 @@ namespace AdventOfCode.InputMappers
             Console.WriteLine($" Carriage : {carriageReturns}");
             Console.WriteLine($" newLine : {newLines}.");
 
-            applogger.LogList(newSymbols);
+            appLogger.LogList(newSymbols);
 
 
 
 
             foreach (var record in gearRecords)
             {
-                int adjacentCount = record.AdjacentRecords.Count;
-                Console.WriteLine($" Number of Adjacent records {adjacentCount}.");
+            int adjacentCount = record.AdjacentRecords.Count;
+            Console.WriteLine($" Number of Adjacent records {adjacentCount}.");
             }
 
 
@@ -138,42 +130,8 @@ namespace AdventOfCode.InputMappers
             Console.WriteLine($"Gear total : {gearTotal}");
 
 
-
-
-
             Console.ReadKey();
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
     }
 }
-
-
-
-

@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode._2023.Day03
 {
-    public class AppLogger
+    public class Day3Logger
     {
         private ILogger _logger;
 
-        public AppLogger()
+        public Day3Logger()
         {
             CreateLogger();
         }
