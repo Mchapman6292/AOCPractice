@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdventOfCode._2023.Day03
+namespace AdventOfCode._2023.Day03.Day03Loggers
 {
-    public class Day3Logger
+    public class Day03Logger
     {
         private ILogger _logger;
 
-        public Day3Logger()
+        public Day03Logger()
         {
             CreateLogger();
         }

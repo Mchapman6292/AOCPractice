@@ -10,7 +10,7 @@ using System.Reflection.Metadata.Ecma335;
 using AOCPractice.AppLoggers;
 using Serilog.Core;
 using System.Text.RegularExpressions;
-using AdventOfCode._2023.Day03;
+using AdventOfCode._2023.Day03.Day03Loggers;
 
 namespace AOCPractice.AdjacentServices
 {
@@ -27,7 +27,7 @@ namespace AOCPractice.AdjacentServices
         // Numbers that are broken up by a symbol
         
 
-        private readonly Day3Logger _appLogger;
+        private readonly Day03Logger _appLogger;
 
         private Input _aocInput;
 
@@ -39,7 +39,7 @@ namespace AOCPractice.AdjacentServices
 
 
 
-        public AdjacentService( Input aocInput, Day3Logger logger)
+        public AdjacentService( Input aocInput, Day03Logger logger)
         {
             _aocInput = aocInput;
             _appLogger = logger;

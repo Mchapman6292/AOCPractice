@@ -2,13 +2,13 @@
 using AdventOfCode.DigitRecords;
 using AOCPractice.AdjacentServices;
 using System;
-
+using AdventOfCode._2023.Day03.Day03Loggers;
 using AOCInputs;
 
 
-namespace AdventOfCode._2023.Day03
+namespace AdventOfCode._2023.Day03.Day03Answer
 {
-    public class Answer
+    public class Day03Answer
     {
 
 
@@ -16,7 +16,7 @@ namespace AdventOfCode._2023.Day03
         {
 
             Input aocInput = new Input();
-            Day3Logger appLogger = new Day3Logger();
+            Day03Logger appLogger = new Day03Logger();
 
             AdjacentService adjacentService = new AdjacentService(aocInput, appLogger);
 
