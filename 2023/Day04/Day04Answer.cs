@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AdventOfCode._2023.Day04.Day04PuzzleInputs;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 
-namespace AdventOfCode._2023.Day04
+namespace AdventOfCode._2023.Day04.Day04Answers
 {
     public class Day04Answer
     {
+        public Day04PuzzleInput PuzzleInput { get; set; }
+        public Day04Logger day4Logger { get; set; }
+
         // List of winning numbers & list of actual numbers.
         // One card worth 1 point.
         // Every subsequent match doubles the score from this point. 
@@ -20,69 +24,29 @@ namespace AdventOfCode._2023.Day04
         // Simplest approach is probably to create a dict of winning numbers and check each number against this.
 
 
-        public string ExtractInputFromWordDoc(string filepath)
+        public Day04Answer(Day04PuzzleInput puzzleInput, Day04Logger d4Logger)
         {
-            StringBuilder day04String = new StringBuilder();
-
-            using (WordprocessingDocument doc = WordprocessingDocument.Open(filepath, false))
-            {
-                var mainPart = doc.MainDocumentPart;
-
-                var body = mainPart.Document.Body;
-
-                foreach (var paragraph in body.Elements<Paragraph>())
-                {
-                    day04String.AppendLine(paragraph.InnerText);
-                }
-            }
-            return day04String.ToString();
-        }
-
-        public string[] SplitStringByNewLine(string inputString)
-        {
-            string[] cardGames = inputString.Split('\n');
-            return cardGames;
+            PuzzleInput = puzzleInput;
+            day4Logger = d4Logger;
         }
 
 
-        public Dictionary<string, Dictionary<string, List<int>>> ExtractCardValues(string[] cardGames)
+
+        public void Answer()
         {
-            Dictionary<string, Dictionary<string, List<int>>> cardGamesDict = new Dictionary<string, Dictionary<string, List<int>>>();
 
+            List<int> cardNumbers = new List<int> { 1, 2, 3, 4 };
+ 
+            string[] testStrings = PuzzleInput.GenerateTestString();
 
-            if (cardGames.Length == 0)
-            {
-                throw new ArgumentNullException($" Input string is empty for {nameof(ExtractCardValues)}.");
-            }
+            Dictionary<int, Dictionary<string, List<int>>> games = PuzzleInput.ExtractCardValues(testStrings);
 
-            foreach (string game in cardGames)
-            {
-                int winNumbersIndex = game.IndexOf(':');
-            }
-        }
+            day4Logger.LogScratchCardGames(games, cardNumbers);
 
-
-        public string ExtractWinNumbers(string cardGame)
-        {
-            if (cardGame == null || cardGame == string.Empty)
-            {
-                throw new ArgumentNullException($" cardGame string is null or empty for {nameof(ExtractWinNumbers)}");
-            }
-
-            int startIndex = cardGame.IndexOf(":") + 1;
-            int endIndex = cardGame.IndexOf("|");
-
-
-            string winNumbersSubString = cardGame.Substring(startIndex, endIndex - startIndex);
-
-            int[] winNumbers = winNumbersSubString.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                                                    .Select(int.Parse)
-                                                    .ToArray();
-
-            
 
 
         }
+
 
 
 

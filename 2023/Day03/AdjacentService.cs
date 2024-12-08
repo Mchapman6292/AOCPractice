@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using AdventOfCode.DigitRecords;
 using AOCInputs;
 using System.Reflection.Metadata.Ecma335;
-using AOCPractice.AppLoggers;
+using AOCPractice.BaseLoggers;
 using Serilog.Core;
 using System.Text.RegularExpressions;
 using AdventOfCode._2023.Day03.Day03Loggers;
