@@ -37,14 +37,69 @@ namespace AdventOfCode._2023.Day04.Day04Answers
 
             List<int> cardNumbers = new List<int> { 1, 2, 3, 4 };
  
-            string[] testStrings = PuzzleInput.GenerateTestString();
+            string[] testStrings = PuzzleInput.GenerateSplitInputString();
 
             Dictionary<int, Dictionary<string, List<int>>> games = PuzzleInput.ExtractCardValues(testStrings);
 
-            day4Logger.LogScratchCardGames(games, cardNumbers);
+        }
 
 
 
+        public int CompareNumbers()
+        {
+            int gameTotal = 0;
+
+            string[] testStrings = PuzzleInput.GenerateSplitInputString();
+
+            foreach(var game in PuzzleInput.ExtractCardValues(testStrings))
+            {
+
+
+                var gameNumber = game.Key;
+                var allNumbers = game.Value;
+
+                List<int> winningNumbers = allNumbers["WinningNumbers"];
+                List<int> actualNumbers = allNumbers["ActualNumbers"];
+
+                List<int> matchingNumbers = winningNumbers.Intersect(actualNumbers).ToList();
+
+                int matchCount = matchingNumbers.Count;
+
+                int cardTotal = calculateCardScore(matchCount);
+
+                gameTotal += cardTotal;
+            }
+            return gameTotal;
+        }
+
+
+        public int calculateCardScore(int gameTotal)
+        {
+            int gamescore = 0;
+
+            if(gameTotal == 0)
+            {
+                return 0;
+            }
+            if(gameTotal == 1) 
+            {
+                return 1;
+            }
+
+            else
+            {
+                gamescore = 1;
+                gameTotal--;
+            }
+
+            while(gameTotal > 0) 
+            {
+                gamescore = gamescore * 2;
+                gameTotal--;
+            }
+
+            return gamescore;
+ 
         }
 
 

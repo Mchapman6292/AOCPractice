@@ -26,7 +26,11 @@ namespace AdventOfCode.InputMappers
             Day04Answer day04Answer = new Day04Answer(day04Input, day04Logger);
 
 
-            day04Answer.Answer();
+            int testAnswer = day04Answer.CompareNumbers();
+
+            Console.WriteLine(testAnswer);
+
+            Console.ReadKey();
 
             Log.CloseAndFlush();
 

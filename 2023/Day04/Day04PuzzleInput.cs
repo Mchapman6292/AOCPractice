@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using AOCPractice.BaseLoggers;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
 {
@@ -28,7 +29,7 @@ namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
 
 
         // Use first 4 card games as test.
-        public string[]  GenerateTestString()
+        public string[]  GenerateSplitInputString()
         {
             string day4Input = ExtractInputFromWordDoc();
             string[] splitInput = SplitStringByNewLine(day4Input);
@@ -36,6 +37,7 @@ namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
             return splitInput;
         }
 
+        
 
 
         public string ExtractInputFromWordDoc(string filepath = "C:\\Users\\mchap\\source\\repos\\AOCPractice\\InputWordDocs\\Day4.docx")
@@ -55,7 +57,8 @@ namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
 
         public string[] SplitStringByNewLine(string inputString)
         {
-            return inputString.Split('\n');
+            return inputString.Split(new[] { Environment.NewLine, "\r", "\n" },
+                StringSplitOptions.RemoveEmptyEntries);
         }
 
 
@@ -99,15 +102,28 @@ namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
                 throw new ArgumentNullException($" cardGame string is null or empty for {nameof(ExtractWinNumbers)}");
             }
 
-            int startIndex = cardGame.IndexOf(":") + 1;
-            int endIndex = cardGame.IndexOf("|");
 
+            int gameNumber = ExtractCardNumber(cardGame);
+            string winPattern = @":\s*((?:\d+\s*)+)\|";
 
-            string winNumbersSubString = cardGame.Substring(startIndex, endIndex - startIndex);
+            Match match = Regex.Match(cardGame, winPattern);
 
-            return winNumbersSubString.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                                                    .Select(int.Parse)
-                                                    .ToList();
+            if(!match.Success)
+            {
+                throw new FormatException($"Error extracting winNumbers for {cardGame}.");
+            }
+
+            string winNumberString = match.Groups[1].Value;
+
+            List<int> winNumbers = winNumberString.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList();
+
+     
+                                                 
+            _day04Logger.Info($"Win numbers extracted for cardGame: {gameNumber}.");
+
+            _day04Logger.LogList(winNumbers);
+
+            return winNumbers;
         }
 
         public List<int> ExtractActualNumbers(string cardGame)
@@ -115,19 +131,28 @@ namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
             if (cardGame == null || cardGame == string.Empty)
             {
                 throw new ArgumentNullException($" cardGame string is null or empty for {nameof(ExtractActualNumbers)}");
-
             }
 
-            Console.WriteLine
+            int gameNumber = ExtractCardNumber(cardGame);
+            string actualPattern = @"\|\s*((?:\d+\s*)+)$";
 
-            int startIndex = cardGame.IndexOf('|') + 1;
-            int endIndex = cardGame.Length - 1;
+            Match match = Regex.Match(cardGame, actualPattern);
 
-            string actualNumbersSubString = cardGame.Substring(startIndex, endIndex - startIndex);
+            if(!match.Success) 
+            {
+                throw new FormatException($"Error extracting actualNumbers for {cardGame}.");
+            }
 
-            return actualNumbersSubString.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                                                        .Select(int.Parse)
-                                                       .ToList();
+            string actualNumberString = match.Groups[1].Value;
+
+            List<int> actualNumbers = actualNumberString.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList();
+
+
+            _day04Logger.Info($"Actual numbers extracted for cardGame: {gameNumber}.");
+
+            _day04Logger.LogList(actualNumbers);
+
+            return actualNumbers;
         }
 
         public int ExtractCardNumber(string cardGame)
@@ -137,18 +162,17 @@ namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
                 throw new ArgumentNullException($" cardGame string is null or empty for {nameof(ExtractActualNumbers)}");
             }
 
-            int startIndex = 0;
-            int endIndex = cardGame.IndexOf(':') - 1;
+            string cardRegex = @"Card\s+(\d+)";
 
-            string cardSubstring = cardGame.Substring(startIndex, endIndex - 1);
+            Match match = Regex.Match(cardGame, cardRegex);
 
-            string cardGameString = cardSubstring.Replace("Card", " ").Trim();
+            if (!match.Success)
+            {
+                throw new FormatException($"Could not find card number in: {cardGame}");
+            }
 
-            Console.Write($" Substring for {cardGame}: {cardSubstring}, trimmed string: {cardGameString}.");
-
-
-            return int.Parse(cardGameString);
+            return int.Parse(match.Groups[1].Value);
         }
-
     }
 }
+
