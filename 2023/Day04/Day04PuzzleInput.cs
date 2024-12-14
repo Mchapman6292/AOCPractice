@@ -173,6 +173,8 @@ namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
 
             return int.Parse(match.Groups[1].Value);
         }
+
+
     }
 }
 
