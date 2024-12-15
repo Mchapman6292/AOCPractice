@@ -6,13 +6,16 @@ using System.Threading.Tasks;
 using AdventOfCode._2023.Day04.Day04PuzzleInputs;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using AdventOfCode._2023.Day04.Day04PartTwo;
 
 namespace AdventOfCode._2023.Day04.Day04Answers
 {
     public class Day04Answer
     {
         public Day04PuzzleInput PuzzleInput { get; set; }
-        public Day04Logger day4Logger { get; set; }
+        public Day04Logger day04Logger { get; set; }
+
+        public Day04Part2 day04Part2 { get; set; }
 
         // List of winning numbers & list of actual numbers.
         // One card worth 1 point.
@@ -24,10 +27,11 @@ namespace AdventOfCode._2023.Day04.Day04Answers
         // Simplest approach is probably to create a dict of winning numbers and check each number against this.
 
 
-        public Day04Answer(Day04PuzzleInput puzzleInput, Day04Logger d4Logger)
+        public Day04Answer(Day04PuzzleInput puzzleInput, Day04Logger d4Logger, Day04Part2 part2)
         {
             PuzzleInput = puzzleInput;
-            day4Logger = d4Logger;
+            day04Logger = d4Logger;
+            day04Part2 = part2;
         }
 
 
@@ -45,13 +49,12 @@ namespace AdventOfCode._2023.Day04.Day04Answers
 
 
 
-        public int CompareNumbers()
+        public int GetTotalMatches(string[] cardGameString)
         {
             int gameTotal = 0;
 
-            string[] testStrings = PuzzleInput.GenerateSplitInputString();
 
-            foreach(var game in PuzzleInput.ExtractCardValues(testStrings))
+            foreach(var game in PuzzleInput.ExtractCardValues(cardGameString))
             {
 
 

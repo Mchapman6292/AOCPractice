@@ -32,9 +32,15 @@ namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
         public string[]  GenerateSplitInputString()
         {
             string day4Input = ExtractInputFromWordDoc();
-            string[] splitInput = SplitStringByNewLine(day4Input);
+            return SplitStringByNewLine(day4Input);
+        }
 
-            return splitInput;
+        public string GenerateFourCardGameTestString()
+        {
+            string day4Input = ExtractInputFromWordDoc();
+            string[] input = SplitStringByNewLine(day4Input);
+
+           return  input[3];
         }
 
         
@@ -92,6 +98,9 @@ namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
             return cardGamesDict;
         }
 
+
+
+  
 
 
 
@@ -173,6 +182,10 @@ namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
 
             return int.Parse(match.Groups[1].Value);
         }
+
+
+
+
 
 
     }

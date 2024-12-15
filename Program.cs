@@ -8,6 +8,7 @@ using AdventOfCode._2023.Day04.Day04Answers;
 using AdventOfCode._2023.Day04;
 using AdventOfCode._2023.Day04.Day04PuzzleInputs;
 using Serilog;
+using AdventOfCode._2023.Day04.Day04PartTwo;
 
 namespace AdventOfCode.InputMappers
 {
@@ -23,12 +24,15 @@ namespace AdventOfCode.InputMappers
 
             Day04Logger day04Logger = new Day04Logger();
             Day04PuzzleInput day04Input = new Day04PuzzleInput(day04Logger);
-            Day04Answer day04Answer = new Day04Answer(day04Input, day04Logger);
+            Day04Part2 day04Part2 = new Day04Part2(day04Logger, day04Input);
+            Day04Answer day04Answer = new Day04Answer(day04Input, day04Logger, day04Part2);
 
 
-            int testAnswer = day04Answer.CompareNumbers();
 
-            Console.WriteLine(testAnswer);
+            string[] testStrings = day04Input.GenerateSplitInputString();
+
+           day04Answer.GetTotalMatches(testStrings);
+
 
             Console.ReadKey();
 
