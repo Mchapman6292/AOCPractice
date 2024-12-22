@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AOCPractice.BaseLoggers;
 
-namespace AdventOfCode._2023.Day04
+namespace AdventOfCode._2023.Day04Loggers
 {
     public class Day04Logger : BaseLogger
     {

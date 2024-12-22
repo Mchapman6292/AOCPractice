@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using AdventOfCode._2023.Day04Loggers;
 using AdventOfCode._2023.Day04.Day04PuzzleInputs;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -12,7 +12,7 @@ namespace AdventOfCode._2023.Day04.Day04Answers
 {
     public class Day04Answer
     {
-        public Day04PuzzleInput PuzzleInput { get; set; }
+        public Day04InputFormatter day04InputFormatter { get; set; }
         public Day04Logger day04Logger { get; set; }
 
         public Day04Part2 day04Part2 { get; set; }
@@ -27,9 +27,9 @@ namespace AdventOfCode._2023.Day04.Day04Answers
         // Simplest approach is probably to create a dict of winning numbers and check each number against this.
 
 
-        public Day04Answer(Day04PuzzleInput puzzleInput, Day04Logger d4Logger, Day04Part2 part2)
+        public Day04Answer(Day04InputFormatter inputFormat, Day04Logger d4Logger, Day04Part2 part2)
         {
-            PuzzleInput = puzzleInput;
+            day04InputFormatter = inputFormat;
             day04Logger = d4Logger;
             day04Part2 = part2;
         }
@@ -41,9 +41,9 @@ namespace AdventOfCode._2023.Day04.Day04Answers
 
             List<int> cardNumbers = new List<int> { 1, 2, 3, 4 };
  
-            string[] testStrings = PuzzleInput.GenerateSplitInputString();
+            string[] testStrings = day04InputFormatter.GenerateFullSplitInput();
 
-            Dictionary<int, Dictionary<string, List<int>>> games = PuzzleInput.ExtractCardValues(testStrings);
+            Dictionary<int, Dictionary<string, List<int>>> games = day04InputFormatter.ExtractCardValues(testStrings);
 
         }
 
@@ -54,7 +54,7 @@ namespace AdventOfCode._2023.Day04.Day04Answers
             int gameTotal = 0;
 
 
-            foreach(var game in PuzzleInput.ExtractCardValues(cardGameString))
+            foreach(var game in day04InputFormatter.ExtractCardValues(cardGameString))
             {
 
 

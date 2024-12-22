@@ -4,24 +4,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Packaging;
+using AdventOfCode._2023.Day04Loggers;
 using DocumentFormat.OpenXml.Wordprocessing;
 using AOCPractice.BaseLoggers;
 using System.Text.RegularExpressions;
+using AdventOfCode._2023.Day04.Day04Inputs;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 
 namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
 {
-    public class Day04PuzzleInput
+    public class Day04InputFormatter
     {
 
         private readonly Day04Logger _day04Logger;
+        private readonly Day04Input _day04Input;
 
 
 
 
-        public Day04PuzzleInput(Day04Logger day04Logger)
+        public Day04InputFormatter(Day04Logger day04Logger, Day04Input day04Input)
         {
             _day04Logger = day04Logger;
+            _day04Input = day04Input;
         }
 
 
@@ -29,21 +33,21 @@ namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
 
 
         // Use first 4 card games as test.
-        public string[]  GenerateSplitInputString()
+        public string[]  GenerateFullSplitInput()
         {
-            string day4Input = ExtractInputFromWordDoc();
-            return SplitStringByNewLine(day4Input);
+            string fullInput = _day04Input.FullInput;
+            return SplitStringByNewLine(fullInput);
         }
 
-        public string GenerateFourCardGameTestString()
+        public string[] GenerateTestString()
         {
-            string day4Input = ExtractInputFromWordDoc();
-            string[] input = SplitStringByNewLine(day4Input);
+            string testInput = _day04Input.TestInput;
 
-           return  input[3];
+            return SplitStringByNewLine(testInput);
+
         }
 
-        
+
 
 
         public string ExtractInputFromWordDoc(string filepath = "C:\\Users\\mchap\\source\\repos\\AOCPractice\\InputWordDocs\\Day4.docx")
@@ -128,9 +132,7 @@ namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
 
      
                                                  
-            _day04Logger.Info($"Win numbers extracted for cardGame: {gameNumber}.");
 
-            _day04Logger.LogList(winNumbers);
 
             return winNumbers;
         }
@@ -157,10 +159,6 @@ namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
             List<int> actualNumbers = actualNumberString.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList();
 
 
-            _day04Logger.Info($"Actual numbers extracted for cardGame: {gameNumber}.");
-
-            _day04Logger.LogList(actualNumbers);
-
             return actualNumbers;
         }
 
@@ -182,6 +180,25 @@ namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
 
             return int.Parse(match.Groups[1].Value);
         }
+
+
+        public List<int> ExtractAllCardNumbers(string[] cardGames)
+        {
+            if (cardGames == null || cardGames.Length < 1)
+            {
+                throw new ArgumentNullException($" cardGame string is null or empty for {nameof(ExtractAllCardNumbers)}");
+            }
+
+            List<int> results = new List<int>();
+
+            foreach(string cardGame in cardGames) 
+            {
+                results.Add(ExtractCardNumber(cardGame));
+            }
+            return results;
+        }
+
+       
 
 
 
