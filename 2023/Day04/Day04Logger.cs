@@ -14,7 +14,7 @@ namespace AdventOfCode._2023.Day04Loggers
         {
             if(cardGames == null || cardGames.Count == 0)
             {
-                _logger.Information($"CardGames is empty for {nameof(LogScratchCardGames)}.");
+                day04Logger.Information($"CardGames is empty for {nameof(LogScratchCardGames)}.");
                 return;
             }
 
@@ -22,15 +22,15 @@ namespace AdventOfCode._2023.Day04Loggers
             {
                 if(cardGames.TryGetValue(cardNumber, out var game))
                 {
-                    _logger.Information($" Card: {cardNumber}");
+                    day04Logger.Information($" Card: {cardNumber}");
                     foreach (var (category, numbers) in game)
                     {
-                        _logger.Information($"    {category}: [{string.Join(", ", numbers)}]");
+                        day04Logger.Information($"    {category}: [{string.Join(", ", numbers)}]");
                     }
                 }
                 else
                 {
-                    _logger.Information($"Card {cardNumber} not found in games dictionary");
+                    day04Logger.Information($"Card {cardNumber} not found in games dictionary");
                 }
             }
         }

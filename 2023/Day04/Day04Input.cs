@@ -12,13 +12,19 @@ namespace AdventOfCode._2023.Day04.Day04Inputs
         // Card 1:10
         // Card 2: 6
         // Card 3: 7
-        // Card 4: 4
+        // Card 4: 10             
         //Card 5: 10
         // Card 6: 5
         // Card 7: 1
         // Card 8: 2
         // Card 9: 0
         // Card 10:0
+
+
+        /// <summary>
+        /// 2024-12-23 07:43:08 [INF]  Game4 Count10. UpdateAllCardGameMatchesDict
+        //2024-12-23 07:43:08 [INF]  Game5 Count10. UpdateAllCardGameMatchesDict
+        /// </summary>
 
 
 

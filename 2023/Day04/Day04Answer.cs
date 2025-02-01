@@ -13,7 +13,7 @@ namespace AdventOfCode._2023.Day04.Day04Answers
     public class Day04Answer
     {
         public Day04InputFormatter day04InputFormatter { get; set; }
-        public Day04Logger day04Logger { get; set; }
+        private readonly Day04Logger _day04Logger;
 
         public Day04Part2 day04Part2 { get; set; }
 
@@ -30,86 +30,85 @@ namespace AdventOfCode._2023.Day04.Day04Answers
         public Day04Answer(Day04InputFormatter inputFormat, Day04Logger d4Logger, Day04Part2 part2)
         {
             day04InputFormatter = inputFormat;
-            day04Logger = d4Logger;
+            _day04Logger = d4Logger;
             day04Part2 = part2;
         }
 
 
 
+        /// <summary>
+        /// Main solution method for Part 1
+        /// Processes all scratchcards and calculates total points
+        /// </summary>
         public void Answer()
         {
+            _day04Logger.Info("Starting Day 4 Part 1 solution...");
 
-            List<int> cardNumbers = new List<int> { 1, 2, 3, 4 };
- 
-            string[] testStrings = day04InputFormatter.GenerateFullSplitInput();
+            // Get input data
+            string[] cards = day04InputFormatter.GenerateFullSplitInput();
+            _day04Logger.Info($"Processing {cards.Length} scratchcards");
 
-            Dictionary<int, Dictionary<string, List<int>>> games = day04InputFormatter.ExtractCardValues(testStrings);
+            // Calculate total points for all cards
+            int totalPoints = GetTotalMatches(cards);
 
+            _day04Logger.Info($"Part 1 solution completed. Total points: {totalPoints}");
+            Console.WriteLine($"Part 1 Answer: {totalPoints}");
         }
 
-
-
+        /// <summary>
+        /// Calculates total points across all scratchcards
+        /// Each card's points are based on number of matches:
+        /// First match = 1 point, each subsequent match doubles the points
+        /// </summary>
         public int GetTotalMatches(string[] cardGameString)
         {
             int gameTotal = 0;
+            _day04Logger.Info("Beginning card match calculations...");
 
+            var cardValues = day04InputFormatter.ExtractCardValues(cardGameString);
 
-            foreach(var game in day04InputFormatter.ExtractCardValues(cardGameString))
+            foreach (var game in cardValues)
             {
-
-
+                // Extract game data
                 var gameNumber = game.Key;
-                var allNumbers = game.Value;
+                var winningNumbers = game.Value["WinningNumbers"];
+                var actualNumbers = game.Value["ActualNumbers"];
 
-                List<int> winningNumbers = allNumbers["WinningNumbers"];
-                List<int> actualNumbers = allNumbers["ActualNumbers"];
-
-                List<int> matchingNumbers = winningNumbers.Intersect(actualNumbers).ToList();
-
+                // Find matching numbers
+                var matchingNumbers = winningNumbers.Intersect(actualNumbers).ToList();
                 int matchCount = matchingNumbers.Count;
 
-                int cardTotal = calculateCardScore(matchCount);
+                // Calculate score for this card
+                int cardScore = CalculateCardScore(matchCount);
+                gameTotal += cardScore;
 
-                gameTotal += cardTotal;
+                _day04Logger.Info($"Card {gameNumber}: {matchCount} matches, Score: {cardScore}");
             }
+
+            _day04Logger.Info($"Total score across all cards: {gameTotal}");
             return gameTotal;
         }
 
-
-        public int calculateCardScore(int gameTotal)
+        /// <summary>
+        /// Calculates points for a single card based on number of matches
+        /// 0 matches = 0 points
+        /// 1 match = 1 point
+        /// Each additional match doubles the points
+        /// </summary>
+        private int CalculateCardScore(int matchCount)
         {
-            int gamescore = 0;
+            // Handle base cases
+            if (matchCount == 0) return 0;
+            if (matchCount == 1) return 1;
 
-            if(gameTotal == 0)
+            // Calculate doubled points for additional matches
+            int score = 1;
+            for (int i = 1; i < matchCount; i++)
             {
-                return 0;
-            }
-            if(gameTotal == 1) 
-            {
-                return 1;
-            }
-
-            else
-            {
-                gamescore = 1;
-                gameTotal--;
+                score *= 2;
             }
 
-            while(gameTotal > 0) 
-            {
-                gamescore = gamescore * 2;
-                gameTotal--;
-            }
-
-            return gamescore;
- 
+            return score;
         }
-
-
-
-
-
-
-        
     }
 }

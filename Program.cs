@@ -5,49 +5,31 @@ using AdventOfCode._2023.Day04.Day04PuzzleInputs;
 using AdventOfCode._2023.Day04.Day04Inputs;
 using AdventOfCode._2023.Day04Loggers;
 using System;
+using AdventOfCode._2023.Day05.DayFiveInput;
+using AdventOfCode._2023.Day05.DayFiveAnswer;
 
 using AdventOfCode._2023.Day04.Day04PartTwo;
+using AdventOfCode._2023.Day05.DayFiveLogger;
+using AdventOfCode._2023.Day05.LogManagers;
 
-namespace AdventOfCode.InputMappers
+namespace AdventOfCode.Program
 {
     class Program
     {
-
-        public Day04Answer Day04 { get; set; }
-
-
-
         static void Main(string[] args)
         {
-            Day04Logger day04Logger = new Day04Logger();
-            Day04Input aocInput = new Day04Input();
-            Day04InputFormatter inputFormatter = new Day04InputFormatter(day04Logger, aocInput);
-            Day04Part2 day04Part2 = new Day04Part2(inputFormatter, aocInput, day04Logger);
-            Day04Answer day04Answer = new Day04Answer(inputFormatter, day04Logger, day04Part2);
+            Day05Logger logger = new Day05Logger();
 
+            LogManager logManager = new LogManager(logger);
 
+            Day05Input day05Input = new Day05Input(logManager);
 
-            string[] fullString = inputFormatter.GenerateFullSplitInput();
-
-
-
-            int part2Answer = day04Part2.CalculateTotalScratchcards();
-
-
-            Console.WriteLine($"Part 2 answer: {part2Answer}");
-
-
-
-            Console.ReadKey();
-
-
-
+            Day05Answer day5Ans = new Day05Answer(day05Input);
 
 
 
 
 
         }
-
     }
 }

@@ -11,7 +11,7 @@ namespace AdventOfCode._2023.Day03.Day03Loggers
 {
     public class Day03Logger
     {
-        private ILogger _logger;
+        private ILogger day04Logger;
 
         public Day03Logger()
         {
@@ -20,7 +20,7 @@ namespace AdventOfCode._2023.Day03.Day03Loggers
 
         private void CreateLogger()
         {
-            _logger = new LoggerConfiguration()
+            day04Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .Enrich.FromLogContext()
                 .WriteTo.Debug(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
@@ -35,12 +35,12 @@ namespace AdventOfCode._2023.Day03.Day03Loggers
 
         public void LogCharRecord(CharRecord record)
         {
-            _logger.Information($"CharRecord - Symbol: {record.Symbol}, Index: {record.Index}, IsChecked: {record.isChecked}");
+            day04Logger.Information($"CharRecord - Symbol: {record.Symbol}, Index: {record.Index}, IsChecked: {record.isChecked}");
         }
 
         public void LogDigitRecord(DigitRecord record)
         {
-            _logger.Information($"DigitRecord - Value: {record.Value}, StartIndex: {record.StartIndex}, EndIndex: {record.EndIndex}, IsAdjacent: {record.IsAdjacent}");
+            day04Logger.Information($"DigitRecord - Value: {record.Value}, StartIndex: {record.StartIndex}, EndIndex: {record.EndIndex}, IsAdjacent: {record.IsAdjacent}");
         }
 
 
@@ -57,12 +57,12 @@ namespace AdventOfCode._2023.Day03.Day03Loggers
         {
             if (!items.Any())
             {
-                _logger.Information("list is empty");
+                day04Logger.Information("list is empty");
                 return;
             }
 
             var itemStrings = items.Select(item => item.ToString());
-            _logger.Information($"List values: {string.Join(", ", itemStrings)}");
+            day04Logger.Information($"List values: {string.Join(", ", itemStrings)}");
         }
 
 
@@ -72,12 +72,12 @@ namespace AdventOfCode._2023.Day03.Day03Loggers
         {
             if (!items.Any())
             {
-                _logger.Information("list is empty");
+                day04Logger.Information("list is empty");
                 return;
             }
 
             var itemStrings = items.Select(item => item?.ToString() ?? "null");
-            _logger.Information($"List values: {itemStrings}");
+            day04Logger.Information($"List values: {itemStrings}");
         }
 
 
@@ -85,16 +85,16 @@ namespace AdventOfCode._2023.Day03.Day03Loggers
         {
             if (!items.Any())
             {
-                _logger.Information($"{title} list is empty");
+                day04Logger.Information($"{title} list is empty");
                 return;
             }
 
-            _logger.Information($"{title}:");
+            day04Logger.Information($"{title}:");
             foreach (var item in items)
             {
                 if (item == null)
                 {
-                    _logger.Information("    null");
+                    day04Logger.Information("    null");
                     continue;
                 }
 
@@ -104,7 +104,7 @@ namespace AdventOfCode._2023.Day03.Day03Loggers
                     .Concat(type.GetFields()
                         .Select(f => $"{f.Name}: {f.GetValue(item)}"));
 
-                _logger.Information($"    [{properties}]", string.Join(", ", properties));
+                day04Logger.Information($"    [{properties}]", string.Join(", ", properties));
 
                 foreach (var property in type.GetProperties())
                 {
@@ -114,7 +114,7 @@ namespace AdventOfCode._2023.Day03.Day03Loggers
                         var listValue = property.GetValue(item);
                         if (listValue is IEnumerable<object> list)
                         {
-                            _logger.Information($"    Logging list property: {property.Name}");
+                            day04Logger.Information($"    Logging list property: {property.Name}");
                             LogEnum(list.Cast<object>().ToList());
                         }
                     }
@@ -126,10 +126,10 @@ namespace AdventOfCode._2023.Day03.Day03Loggers
 
 
 
-        public void Debug(string message) => _logger.Debug(message);
-        public void Debug(string message, params object[] propertyValues) => _logger.Debug(message, propertyValues);
-        public void Info(string message) => _logger.Information(message);
-        public void Info(string message, params object[] propertyValues) => _logger.Information(message, propertyValues);
+        public void Debug(string message) => day04Logger.Debug(message);
+        public void Debug(string message, params object[] propertyValues) => day04Logger.Debug(message, propertyValues);
+        public void Info(string message) => day04Logger.Information(message);
+        public void Info(string message, params object[] propertyValues) => day04Logger.Information(message, propertyValues);
     }
 }
 
