@@ -1,8 +1,9 @@
 ﻿using AdventOfCode._2023.Day05.DayFiveLogger;
 using System.Numerics;
 using AdventOfCode._2023.Day05.LogManagers;
+using AdventOfCode._2023.Day05.MapTypes;
 
-namespace AdventOfCode._2023.Day05.DayFiveInput
+namespace AdventOfCode._2023.Day05.InputService.DayFiveInput
 {
     public class Day05Input
     {
@@ -221,6 +222,40 @@ namespace AdventOfCode._2023.Day05.DayFiveInput
         {
             return ParsedSeeds;
         }
+
+
+        public void ParseAlmanacNumbersFromLine(string line, out BigInteger destinationStart, out BigInteger sourceStart, out BigInteger range)
+        {
+            destinationStart = 0;
+            sourceStart = 0;
+            range = 0;
+
+            string[] seedArray = line.Split(' ');
+
+            if (seedArray.Length < 3)
+            {
+                throw new ArgumentException($"Unable to parse 3 values in {nameof(ParseAlmanacNumbersFromLine)}. Input: {line}");
+            }
+
+            if (!BigInteger.TryParse(seedArray[0], out destinationStart))
+            {
+                throw new FormatException($"Failed to parse destinationStart: {seedArray[0]} in {nameof(ParseAlmanacNumbersFromLine)}");
+            }
+
+            if (!BigInteger.TryParse(seedArray[1], out sourceStart))
+            {
+                throw new FormatException($"Failed to parse sourceStart: {seedArray[1]} in {nameof(ParseAlmanacNumbersFromLine)}");
+            }
+
+            if (!BigInteger.TryParse(seedArray[2], out range))
+            {
+                throw new FormatException($"Failed to parse range: {seedArray[2]} in {nameof(ParseAlmanacNumbersFromLine)}");
+            }
+        }
+
+        
+
+
 
 
 

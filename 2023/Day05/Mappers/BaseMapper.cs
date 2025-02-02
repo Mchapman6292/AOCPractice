@@ -2,6 +2,13 @@
 using AdventOfCode._2023.Day05.LogManagers;
 using System.Numerics;
 
+/* First step is to find valid numbers/range that can be passed to the method
+ * 
+ * 
+ * 
+ * */
+
+
 namespace AdventOfCode._2023.Day05.Mappers.BaseMappers
 {
     public class BaseMapper
@@ -15,16 +22,14 @@ namespace AdventOfCode._2023.Day05.Mappers.BaseMappers
             _logger = logManager.GetLogger();
         }
 
-
-
         public void MapValues(BigInteger destinationStart, BigInteger sourceStart, BigInteger range, out BigInteger newDestination, out BigInteger newSource)
         {
             newDestination = destinationStart;
             newSource = sourceStart;
 
-            BigInteger difference = sourceStart - destinationStart;
+            BigInteger difference = CalculateValidRange(sourceStart, destinationStart);
 
-            if(difference > 0) 
+            if (difference > 0) 
             {
                 newDestination += difference;
                 newSource += difference;
@@ -36,6 +41,13 @@ namespace AdventOfCode._2023.Day05.Mappers.BaseMappers
                 newSource -= difference;
             }
         }
+
+        public BigInteger CalculateValidRange(BigInteger sourceStart, BigInteger destinationStart)
+        {
+            return sourceStart - destinationStart;
+        }
+
+       
 
 
 
