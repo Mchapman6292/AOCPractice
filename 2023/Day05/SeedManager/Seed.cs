@@ -28,6 +28,13 @@ namespace AdventOfCode._2023.Day05.SeedManager.Seeds
             };
         }
 
+
+
+        public void UpdateCurrentValue(BigInteger currentValue) 
+        {
+            CurrentValue = currentValue;
+        }
+
     }
 
 }

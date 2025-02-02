@@ -2,6 +2,8 @@
 using System.Numerics;
 using AdventOfCode._2023.Day05.LogManagers;
 using AdventOfCode._2023.Day05.MapTypes;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using System.Collections.Generic;
 
 namespace AdventOfCode._2023.Day05.InputService.DayFiveInput
 {
@@ -223,6 +225,19 @@ namespace AdventOfCode._2023.Day05.InputService.DayFiveInput
             return ParsedSeeds;
         }
 
+        public List<string> SplitMapValuesByLine(string mapString)
+        {
+            List<string> splitSeeds = new List<string>();
+
+            string[] splitArray = mapString.Split('\n');
+
+            foreach(string splitString in splitArray)
+            {
+                splitSeeds.Add(splitString);
+            }
+            return splitSeeds;
+        }
+
 
         public void ParseAlmanacNumbersFromLine(string line, out BigInteger destinationStart, out BigInteger sourceStart, out BigInteger range)
         {
@@ -251,6 +266,24 @@ namespace AdventOfCode._2023.Day05.InputService.DayFiveInput
             {
                 throw new FormatException($"Failed to parse range: {seedArray[2]} in {nameof(ParseAlmanacNumbersFromLine)}");
             }
+        }
+
+
+        public List<string> GetAllMapStringsInList()
+        {
+            List<string> allMapStrings = new List<string>();
+
+            allMapStrings.AddRange(
+                [
+                    SeedToSoilMap,
+                    SoilToFertilizerMap,
+                    FertilizerToWaterMap,
+                    LightToTemperatureMap,
+                    TemperatureToHumidityMap,
+                    HumidityToLocationMap
+                ]);
+
+            return allMapStrings;
         }
 
         

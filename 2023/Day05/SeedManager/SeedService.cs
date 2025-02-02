@@ -18,11 +18,11 @@ namespace AdventOfCode._2023.Day05.SeedManager.SeedServices
 
 
 
-        public BigInteger  Test(Almanac alm, Seed currentSeed)
+        public BigInteger  Test(BigInteger sourceStart, BigInteger range, Seed currentSeed)
         {
-            BigInteger updatedRange = CalculateMaxSourceRange(alm.SourceStart, alm.Range);
+            BigInteger updatedRange = CalculateMaxSourceRange(sourceStart, range);
 
-            if(!isWithinRange(currentSeed.CurrentValue,alm.SourceStart, updatedRange))
+            if(!isWithinRange(currentSeed.CurrentValue, sourceStart, updatedRange))
             {
                 return currentSeed.CurrentValue;
             }
@@ -40,6 +40,11 @@ namespace AdventOfCode._2023.Day05.SeedManager.SeedServices
         public bool isWithinRange(BigInteger currentValue, BigInteger sourceStart, BigInteger sourceRange)
         {
             return currentValue >= sourceStart && currentValue <= sourceRange;  
+        }
+
+        public BigInteger CaclulateOffSet(BigInteger destinationStart, BigInteger sourceStart)
+        {
+            return destinationStart - sourceStart;
         }
 
 
