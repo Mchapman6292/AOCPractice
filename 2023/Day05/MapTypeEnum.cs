@@ -8,6 +8,14 @@
         WaterToLight,
         LightToTemperature,
         TemperatureToHumidity,
-        HumidityToLocation
+        HumidityToLocation,
+        Test,
+        SeedToSoilTest,
+        SoilToFertilizerTest,
+        FertilizerToWaterTest,
+        WaterToLightTest,
+        LightToTemperatureTest,
+        TemperatureToHumidityTest,
+        HumidityToLocationTest
     }
 }

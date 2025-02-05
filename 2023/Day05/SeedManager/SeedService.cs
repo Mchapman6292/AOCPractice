@@ -1,6 +1,7 @@
 ﻿using AdventOfCode._2023.Day05.Almanacs;
 using AdventOfCode._2023.Day05.DayFiveLogger;
 using AdventOfCode._2023.Day05.LogManagers;
+using AdventOfCode._2023.Day05.MapTypes;
 using AdventOfCode._2023.Day05.SeedManager.Seeds;
 using System.Numerics;
 
@@ -39,17 +40,31 @@ namespace AdventOfCode._2023.Day05.SeedManager.SeedServices
 
         public bool isWithinRange(BigInteger currentValue, BigInteger sourceStart, BigInteger sourceRange)
         {
-            return currentValue >= sourceStart && currentValue <= sourceRange;  
+            return(currentValue >= sourceStart && currentValue <= sourceRange);
         }
 
         public BigInteger CaclulateOffSet(BigInteger destinationStart, BigInteger sourceStart)
         {
+ 
             return destinationStart - sourceStart;
         }
 
 
+        public void UpdateTotalValueForMapType(Seed currentSeed,MapType mapType, BigInteger endValue)
+        {
+            currentSeed.MapValues[mapType] = endValue;
+        }
 
-        
+
+        public void UpdateCurrentValue(Seed currentSeed, BigInteger currentValue)
+        {
+            currentSeed.CurrentValue = currentValue;
+        }
+
+
+
+
+
 
 
 

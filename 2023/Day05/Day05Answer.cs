@@ -6,6 +6,12 @@ using System.Numerics;
 using AOCInputs;
 using AdventOfCode._2023.Day05.SeedManager.SeedServices;
 
+using AdventOfCode._2023.Day05.MapTypes;
+using Microsoft.AspNetCore.Localization;
+using System;
+using System.Text;
+
+
 namespace AdventOfCode._2023.Day05.DayFiveAnswer
 {
 
@@ -36,6 +42,11 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
      *  Seed 4106085912
      *  1640984363 3136305987 77225710
      *  We calculate 3136305987  + 77225710 to find our range, if our number falls between the result we then calculate the difference  between 3136305987 - 1640984363 and then apply that to all values within our initially calculated range
+     *  
+     *  
+     *  
+     *  Test Cases
+     *  
 
 
 
@@ -46,22 +57,26 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
 
     public class Day05Answer
     {
-        public Day05Input Input { get; set; }
+        private  Day05Input _day05Input { get; set; }
 
-        private readonly Day05Logger _logger;
+        private readonly Day05Logger _day05Logger;
 
         private readonly SeedService _seedService;
+
+        public List<Seed> allSeedsList { get; set; }
+
+        public List<Seed> allTestSeedsList { get; set; }    
 
 
         public Day05Answer(Day05Input input, LogManager logManager, SeedService seedService)
         {
-            Input = input;
-            _logger = logManager.GetLogger();
+            _day05Input = input;
+            _day05Logger = logManager.GetLogger();
             _seedService = seedService;
 
         }
 
-        public List<Seed> InitializeSeedList()
+        public void InitializeSeedList()
         {
             List<Seed> seeds = new List<Seed>
             {
@@ -86,55 +101,143 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
                 new Seed(917169654),
                 new Seed(286257440)
             };
-            return seeds;
+            allSeedsList = seeds;
+        }
+
+
+        public void InitializeTestSeedList()
+        {
+            List<Seed> seeds = new List<Seed>
+            {
+                new Seed(79),
+                new Seed(14),
+                new Seed(55),
+                new Seed(13)
+            };
+            allTestSeedsList = seeds;
+        }
+
+        public List<Seed> GetTestSeedList()
+        {
+            return allTestSeedsList;
         }
 
 
 
-        public BigInteger Test()
-        {
-            List<Seed> seeds = InitializeSeedList();
 
-            BigInteger lowestEndResult = seeds[0].CurrentValue;
+        public List<Seed> GetSeedList()
+        {
+            return allSeedsList;
+        }
+
+
+
+        public BigInteger Test(List<Seed> seeds)
+        {
+            BigInteger lowestEndResult = BigInteger.Parse("79228162514264337593543950335");
+
+
+            SortedDictionary<MapType, string> AllMapTypes = _day05Input.GetAllMaps();
+
 
             foreach (Seed currentSeed in seeds)
             {
-                List<string> mapStrings = Input.GetAllMapStringsInList();
+                BigInteger startValue = currentSeed.StartValue;
 
-                foreach (string mapString in mapStrings)
+                foreach (var currentMap in AllMapTypes)
                 {
-                    List<string> splitMapValues = Input.SplitMapValuesByLine(Input.SeedToSoilMap);
+                    List<string> splitMapStrings = _day05Input.SplitMapValuesByLine(currentMap.Value);
 
-                    foreach (string splitValue in splitMapValues)
+                    foreach (string splitString in splitMapStrings)
                     {
-                        BigInteger currentValue = currentSeed.CurrentValue;
-
                         BigInteger destinationStart;
                         BigInteger sourceStart;
                         BigInteger range;
 
-                        Input.ParseAlmanacNumbersFromLine(splitValue, out destinationStart, out sourceStart, out range);
+                        _day05Input.ParseAlmanacNumbersFromLine(splitString, out destinationStart, out sourceStart, out range);
 
                         BigInteger topRangeValue = _seedService.CalculateMaxSourceRange(sourceStart, range);
 
-                        if (!_seedService.isWithinRange(currentValue, sourceStart, topRangeValue))
+                        if (!_seedService.isWithinRange(currentSeed.CurrentValue, sourceStart, topRangeValue))
                         {
-                            break;
+                            Console.WriteLine($"Value{currentSeed.CurrentValue} not within range {sourceStart}, {topRangeValue}.");
+                            currentSeed.CurrentValue = destinationStart;
+                            continue;
                         }
 
-                        BigInteger offSet = _seedService.CaclulateOffSet(sourceStart, range);
+                        BigInteger offSet = _seedService.CaclulateOffSet(destinationStart, sourceStart);
 
-                        currentSeed.CurrentValue = currentValue + offSet;
+                        currentSeed.CurrentValue += offSet;
+
+                        currentSeed.MapValues[currentMap.Key] = currentSeed.CurrentValue;
                     }
+                    
                 }
-                if(currentSeed.CurrentValue < lowestEndResult) 
+                if(startValue < lowestEndResult) 
                 {
-                    lowestEndResult = currentSeed.CurrentValue; 
+                    lowestEndResult = startValue; 
                 }
+
+                _day05Logger.LogSeedMapValues(currentSeed);
             }
             return lowestEndResult;
         }
 
+
+
+        public BigInteger CalculateForOneMap(MapType map, BigInteger startValue, bool test)
+        {
+            var mapString = test ? _day05Input.TestMaps[map] : _day05Input.AllMaps[map];
+            List<string> splitMapValues = _day05Input.SplitMapValuesByLine(mapString);
+            BigInteger currentValue = startValue;
+
+            foreach (string splitValue in splitMapValues)
+            {
+                BigInteger destinationStart, sourceStart, range;
+                _day05Input.ParseAlmanacNumbersFromLine(splitValue, out destinationStart, out sourceStart, out range);
+                BigInteger topRangeValue = _seedService.CalculateMaxSourceRange(sourceStart, range);
+
+                if (_seedService.isWithinRange(currentValue, sourceStart, topRangeValue))
+                {
+                    BigInteger oldValue = currentValue;
+                    BigInteger offSet = _seedService.CaclulateOffSet(destinationStart, sourceStart);
+                    currentValue += offSet;
+                    Console.WriteLine($"Map {map}: Value changed from {oldValue} to {currentValue}");
+                    break;
+                }
+            }
+            return currentValue;
+        }
+
+        public void CalculateForAllMaps(SortedDictionary<MapType, string> maps, Seed seed, bool test)
+        {
+            BigInteger currentValue = seed.StartValue;
+            foreach (MapType map in maps.Keys)
+            {
+                currentValue = CalculateForOneMap(map, currentValue, test);
+                seed.MapValues[map] = currentValue;
+            }
+        }
+
+        public BigInteger? CalculateForAllSeeds(SortedDictionary<MapType, string> maps, List<Seed> seeds, bool test)
+        {
+            foreach (Seed seed in seeds)
+            {
+                CalculateForAllMaps(maps, seed, test);
+            }
+
+            StringBuilder results = new StringBuilder();
+            results.AppendLine("\nFinal Results:");
+            foreach (Seed seed in seeds)
+            {
+                results.AppendLine($"Seed {seed.StartValue} -> Location {seed.MapValues.Values.Last()}");
+            }
+            BigInteger? lowestResult = seeds.Select(s => s.MapValues.Values.Last()).Min();
+            results.AppendLine($"\nLowest Location: {lowestResult}");
+            Console.WriteLine(results.ToString());
+
+            return lowestResult;
+        }
 
 
 

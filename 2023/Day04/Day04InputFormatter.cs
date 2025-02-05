@@ -22,7 +22,7 @@ namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
             _input = input;
         }
 
-        // Input Generation Methods
+        // _day05Input Generation Methods
         public string[] GenerateFullSplitInput()
         {
             string fullInput = _input.FullInput;
@@ -44,7 +44,7 @@ namespace AdventOfCode._2023.Day04.Day04PuzzleInputs
         {
             if (cardGames.Length == 0)
             {
-                throw new ArgumentNullException($"Input string is empty for {nameof(ExtractCardValues)}");
+                throw new ArgumentNullException($"_day05Input string is empty for {nameof(ExtractCardValues)}");
             }
 
             Dictionary<int, Dictionary<string, List<int>>> cardGamesDict = new();

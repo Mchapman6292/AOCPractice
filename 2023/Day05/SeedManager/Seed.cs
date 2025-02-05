@@ -7,7 +7,7 @@ namespace AdventOfCode._2023.Day05.SeedManager.Seeds
     {
         public BigInteger StartValue;
         public BigInteger CurrentValue { get; set; }    
-        public Dictionary<MapType, BigInteger?> MapValues { get; set; }
+        public SortedDictionary<MapType, BigInteger?> MapValues { get; set; }
         public BigInteger EndMapValue { get; set; }
 
         public Seed(BigInteger startValue)
@@ -16,7 +16,7 @@ namespace AdventOfCode._2023.Day05.SeedManager.Seeds
 
             CurrentValue = StartValue;
 
-            MapValues = new Dictionary<MapType, BigInteger?>
+            MapValues = new SortedDictionary<MapType, BigInteger?>
             {
                 { MapType.SeedToSoil, null },
                 { MapType.SoilToFertilizer, null },
@@ -30,10 +30,7 @@ namespace AdventOfCode._2023.Day05.SeedManager.Seeds
 
 
 
-        public void UpdateCurrentValue(BigInteger currentValue) 
-        {
-            CurrentValue = currentValue;
-        }
+
 
     }
 
