@@ -296,7 +296,6 @@ namespace AdventOfCode._2023.Day05.InputService.DayFiveInput
             {
                 ParsedSeeds.Add(BigInteger.Parse(seedString));
             }
-
         }
 
         public List<BigInteger> GetParsedSeeds()
@@ -374,6 +373,28 @@ namespace AdventOfCode._2023.Day05.InputService.DayFiveInput
         public SortedDictionary<MapType, string> GetTestMaps()
         {
             return TestMaps;
+        }
+
+
+        public BigInteger GetMaxValueFromMaps(SortedDictionary<MapType, string> maps)
+        {
+            BigInteger maxValue = 0;
+
+            foreach (var mapEntry in maps)
+            {
+                List<string> mapLines = SplitMapValuesByLine(mapEntry.Value);
+                foreach (string line in mapLines)
+                {
+                    BigInteger destinationStart, sourceStart, range;
+                    ParseAlmanacNumbersFromLine(line, out destinationStart, out sourceStart, out range);
+
+                    maxValue = BigInteger.Max(maxValue, destinationStart);
+                    maxValue = BigInteger.Max(maxValue, sourceStart);
+                    maxValue = BigInteger.Max(maxValue, range);
+                }
+            }
+
+            return maxValue;
         }
 
 

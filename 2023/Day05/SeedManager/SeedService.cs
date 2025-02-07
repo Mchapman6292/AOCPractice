@@ -3,13 +3,16 @@ using AdventOfCode._2023.Day05.DayFiveLogger;
 using AdventOfCode._2023.Day05.LogManagers;
 using AdventOfCode._2023.Day05.MapTypes;
 using AdventOfCode._2023.Day05.SeedManager.Seeds;
+using DocumentFormat.OpenXml.Drawing;
 using System.Numerics;
+using AdventOfCode._2023.Day05.SeedRangeStructures;
 
 namespace AdventOfCode._2023.Day05.SeedManager.SeedServices
 {
     public class SeedService
     {
         private readonly Day05Logger _logger;
+
 
 
         public SeedService(LogManager logManager)
@@ -19,18 +22,6 @@ namespace AdventOfCode._2023.Day05.SeedManager.SeedServices
 
 
 
-        public BigInteger  Test(BigInteger sourceStart, BigInteger range, Seed currentSeed)
-        {
-            BigInteger updatedRange = CalculateMaxSourceRange(sourceStart, range);
-
-            if(!isWithinRange(currentSeed.CurrentValue, sourceStart, updatedRange))
-            {
-                return currentSeed.CurrentValue;
-            }
-
-            return currentSeed.CurrentValue + updatedRange;
-        }
-
         // Returns the new highest source range only. 
         public BigInteger CalculateMaxSourceRange(BigInteger sourceStart, BigInteger Range)
         {
@@ -38,14 +29,42 @@ namespace AdventOfCode._2023.Day05.SeedManager.SeedServices
         }
 
 
+        public BigInteger Part2CalculateSeedRange(BigInteger seedStart , BigInteger seedEnd) 
+        {
+            return seedStart + seedEnd;
+        }
+
+
+
+
+
+
         public bool isWithinRange(BigInteger currentValue, BigInteger sourceStart, BigInteger sourceRange)
         {
             return(currentValue >= sourceStart && currentValue <= sourceRange);
         }
 
+        public bool Part2IsWithinRange(BigInteger startSeed, BigInteger endSeed, BigInteger sourceStart, BigInteger sourceEnd)
+        {
+            return startSeed <= sourceEnd && endSeed >= sourceStart;
+        }
+
+
+        public SeedRangeStructure Part2CalculateNewSeedRange(BigInteger startSeed, BigInteger endSeed, BigInteger sourceStart, BigInteger sourceEnd)
+        {
+            return new SeedRangeStructure
+            {
+                Start = BigInteger.Max(startSeed, sourceStart),
+                End = BigInteger.Max(endSeed, sourceEnd)
+            };  
+        }
+
+
+
+
+
         public BigInteger CaclulateOffSet(BigInteger destinationStart, BigInteger sourceStart)
         {
- 
             return destinationStart - sourceStart;
         }
 

@@ -1,15 +1,12 @@
-﻿using AdventOfCode._2023.Day05.InputService.DayFiveInput;
-using AdventOfCode._2023.Day05.DayFiveLogger;
+﻿using AdventOfCode._2023.Day05.DayFiveLogger;
+using AdventOfCode._2023.Day05.InputService.DayFiveInput;
 using AdventOfCode._2023.Day05.LogManagers;
-using AdventOfCode._2023.Day05.SeedManager.Seeds;
-using System.Numerics;
-using AOCInputs;
-using AdventOfCode._2023.Day05.SeedManager.SeedServices;
-
 using AdventOfCode._2023.Day05.MapTypes;
-using Microsoft.AspNetCore.Localization;
-using System;
+using AdventOfCode._2023.Day05.SeedManager.Seeds;
+using AdventOfCode._2023.Day05.SeedManager.SeedServices;
+using System.Numerics;
 using System.Text;
+using AdventOfCode._2023.Day05.SeedRangeStructures;
 
 
 namespace AdventOfCode._2023.Day05.DayFiveAnswer
@@ -45,8 +42,18 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
      *  
      *  
      *  
-     *  Test Cases
+     *  Part 2
+     *  FIRST Value IS THE START, SECOND SEED IS THE RANGE ---- E.G  79 and contains 14 values: 79, 80, ..., 91, 92. 
+     *  Calculate seed range(inclusive)
      *  
+     *  
+     *  Need an efficient way to find if any of the seeds are within the difference, binary search?
+     *  
+     *  We calculate the new range, and then compare this to the range of seeds, if the value of the new range is greater than the range of seeds then we need to define a new seed range. 
+     *  if(newRange.Lowest <= seedrange.lowest && new Range.Highest >= seedrange.highest) then apply to all values
+     *  Logic is largely the same as the first until the map causes a split. 
+     *  Define a class to hold the seed range? Create a new one each time the map causes a split, could even be a tuple/array
+     *  Do any of the seeds exist in multiple seed ranges?
 
 
 
@@ -55,7 +62,7 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
     */
 
 
-    public class Day05Answer
+    public class Day05Part1Answer
     {
         private  Day05Input _day05Input { get; set; }
 
@@ -65,10 +72,13 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
 
         public List<Seed> allSeedsList { get; set; }
 
-        public List<Seed> allTestSeedsList { get; set; }    
+        public List<Seed> allTestSeedsList { get; set; }
 
 
-        public Day05Answer(Day05Input input, LogManager logManager, SeedService seedService)
+        public List<SeedRangeStructure> seedRanges { get; set; }
+
+
+        public Day05Part1Answer(Day05Input input, LogManager logManager, SeedService seedService)
         {
             _day05Input = input;
             _day05Logger = logManager.GetLogger();
@@ -124,65 +134,10 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
 
 
 
-
         public List<Seed> GetSeedList()
         {
             return allSeedsList;
         }
-
-
-
-        public BigInteger Test(List<Seed> seeds)
-        {
-            BigInteger lowestEndResult = BigInteger.Parse("79228162514264337593543950335");
-
-
-            SortedDictionary<MapType, string> AllMapTypes = _day05Input.GetAllMaps();
-
-
-            foreach (Seed currentSeed in seeds)
-            {
-                BigInteger startValue = currentSeed.StartValue;
-
-                foreach (var currentMap in AllMapTypes)
-                {
-                    List<string> splitMapStrings = _day05Input.SplitMapValuesByLine(currentMap.Value);
-
-                    foreach (string splitString in splitMapStrings)
-                    {
-                        BigInteger destinationStart;
-                        BigInteger sourceStart;
-                        BigInteger range;
-
-                        _day05Input.ParseAlmanacNumbersFromLine(splitString, out destinationStart, out sourceStart, out range);
-
-                        BigInteger topRangeValue = _seedService.CalculateMaxSourceRange(sourceStart, range);
-
-                        if (!_seedService.isWithinRange(currentSeed.CurrentValue, sourceStart, topRangeValue))
-                        {
-                            Console.WriteLine($"Value{currentSeed.CurrentValue} not within range {sourceStart}, {topRangeValue}.");
-                            currentSeed.CurrentValue = destinationStart;
-                            continue;
-                        }
-
-                        BigInteger offSet = _seedService.CaclulateOffSet(destinationStart, sourceStart);
-
-                        currentSeed.CurrentValue += offSet;
-
-                        currentSeed.MapValues[currentMap.Key] = currentSeed.CurrentValue;
-                    }
-                    
-                }
-                if(startValue < lowestEndResult) 
-                {
-                    lowestEndResult = startValue; 
-                }
-
-                _day05Logger.LogSeedMapValues(currentSeed);
-            }
-            return lowestEndResult;
-        }
-
 
 
         public BigInteger CalculateForOneMap(MapType map, BigInteger startValue, bool test)
@@ -238,6 +193,47 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
 
             return lowestResult;
         }
+
+
+
+
+
+
+        public BigInteger CalculatePart2RangeForOneMap(MapType map, BigInteger startSeed, BigInteger endSeed, bool test)
+        {
+            BigInteger currentMinimum = BigInteger.MaxValue;
+
+            List<SeedRangeStructure> seedRanges = new List<SeedRangeStructure>();
+
+
+            var mapString = test ? _day05Input.TestMaps[map] : _day05Input.AllMaps[map];
+
+            foreach(var splitValue in _day05Input.SplitMapValuesByLine(mapString)) 
+            {
+                BigInteger destinationStart, sourceStart, range;
+                _day05Input.ParseAlmanacNumbersFromLine(splitValue, out destinationStart, out sourceStart, out range);
+
+                if(_seedService.Part2IsWithinRange(startSeed, endSeed, sourceStart, range))
+                {
+                    break;
+                }
+
+                BigInteger sourceEnd = startSeed + endSeed;
+
+                _seedService.Part2CalculateNewSeedRange(startSeed, endSeed, sourceStart, sourceEnd); 
+
+            }
+
+
+
+            
+            
+
+
+        }
+
+
+
 
 
 

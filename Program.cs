@@ -20,7 +20,7 @@ namespace AdventOfCode.Program
             LogManager logManager = new LogManager(logger);
             SeedService seedService = new SeedService(logManager);
             Day05Input day05Input = new Day05Input(logManager);
-            Day05Answer day05Ans = new Day05Answer(day05Input, logManager, seedService);
+            Day05Part1Answer day05Ans = new Day05Part1Answer(day05Input, logManager, seedService);
             Day05Tests day05Test = new Day05Tests();
 
             day05Ans.InitializeSeedList();
