@@ -280,6 +280,8 @@ namespace AdventOfCode._2023.Day05.InputService.DayFiveInput
 
 
 
+
+
         public Day05Input(LogManager logManager)
         {
             _logger = logManager.GetLogger();

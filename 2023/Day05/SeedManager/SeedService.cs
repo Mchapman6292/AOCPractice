@@ -1,11 +1,9 @@
-﻿using AdventOfCode._2023.Day05.Almanacs;
-using AdventOfCode._2023.Day05.DayFiveLogger;
+﻿using AdventOfCode._2023.Day05.DayFiveLogger;
 using AdventOfCode._2023.Day05.LogManagers;
 using AdventOfCode._2023.Day05.MapTypes;
 using AdventOfCode._2023.Day05.SeedManager.Seeds;
-using DocumentFormat.OpenXml.Drawing;
-using System.Numerics;
 using AdventOfCode._2023.Day05.SeedRangeStructures;
+using System.Numerics;
 
 namespace AdventOfCode._2023.Day05.SeedManager.SeedServices
 {
@@ -36,6 +34,26 @@ namespace AdventOfCode._2023.Day05.SeedManager.SeedServices
 
 
 
+        public void Part2UpdateOneseedRange(SeedRangeStructure originalSeedValue)
+        {
+            originalSeedValue.End = originalSeedValue.Start + originalSeedValue.End;
+        }
+
+        public List<SeedRangeStructure> UpdateAllPart2SeedRanges(List<SeedRangeStructure> originalSeedValues)
+        {
+            List<SeedRangeStructure> updatedRanges = new List<SeedRangeStructure>();
+
+            foreach(var seeed in originalSeedValues)
+            {
+                Part2UpdateOneseedRange(seeed);
+                updatedRanges.Add(seeed);
+            }
+            return updatedRanges;
+        }
+ 
+
+
+
 
 
 
@@ -50,14 +68,23 @@ namespace AdventOfCode._2023.Day05.SeedManager.SeedServices
         }
 
 
-        public SeedRangeStructure Part2CalculateNewSeedRange(BigInteger startSeed, BigInteger endSeed, BigInteger sourceStart, BigInteger sourceEnd)
+
+
+
+        public void TESTPart2CalculateNewSeedRange(BigInteger startSeed, BigInteger endSeed, BigInteger sourceStart, BigInteger sourceEnd, out bool needsLeftMapped, out bool needsRightMapped)
         {
-            return new SeedRangeStructure
-            {
-                Start = BigInteger.Max(startSeed, sourceStart),
-                End = BigInteger.Max(endSeed, sourceEnd)
-            };  
+            // If seed start is within the map range(sourceStart - sourceEnd) return true & vice versa for rightMapped
+
+            BigInteger start = BigInteger.Min(startSeed, sourceStart);
+            BigInteger end = BigInteger.Max(endSeed, sourceEnd);
+
+            needsLeftMapped = (startSeed <= sourceEnd);
+            needsRightMapped = (endSeed >= sourceStart);
+
+            
+
         }
+
 
 
 
@@ -79,6 +106,67 @@ namespace AdventOfCode._2023.Day05.SeedManager.SeedServices
         {
             currentSeed.CurrentValue = currentValue;
         }
+
+
+        // 
+
+        public List<SeedRangeStructure> SortSeedRanges(List<SeedRangeStructure> seedRanges) 
+        {
+            List<SeedRangeStructure> allSortedSeeds = new List<SeedRangeStructure>();
+
+            List<BigInteger> startSorted = seedRanges
+                    .Select(r => r.Start)
+                    .OrderBy(s => s)
+                    .ToList();
+
+            List<BigInteger> endSorted = seedRanges
+                    .Select(r => r.End)
+                    .OrderBy(e => e)
+                    .ToList();
+
+
+            BigInteger lowestValue = startSorted[0];
+
+            int sortedStartIndex = 0;
+            int sortedEndIndex = 0;
+            int startCount = 0;
+            int endCount = 0;
+
+
+            while (sortedStartIndex < startSorted.Count && sortedEndIndex < endSorted.Count)
+            {
+                BigInteger currentStartValue = startSorted[sortedStartIndex];
+                BigInteger currentEndValue = endSorted[sortedEndIndex];
+               
+                BigInteger next = BigInteger.Min(startSorted[sortedStartIndex + 1], endSorted[sortedEndIndex]);
+
+                if(next == startSorted[sortedStartIndex + 1])
+                {
+                    startCount++;
+                    sortedStartIndex++;
+                }
+                else 
+                {
+                    endCount++;
+                }
+
+                if(startCount == endCount)
+                {
+                    SeedRangeStructure newRange = new SeedRangeStructure()
+                    {
+                        Start = currentStartValue,
+                        End = currentEndValue,
+                    };
+                    allSortedSeeds.Add(newRange);
+                }
+            }
+            return allSortedSeeds;
+        }
+
+
+
+
+
 
 
 

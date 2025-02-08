@@ -51,9 +51,8 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
      *  
      *  We calculate the new range, and then compare this to the range of seeds, if the value of the new range is greater than the range of seeds then we need to define a new seed range. 
      *  if(newRange.Lowest <= seedrange.lowest && new Range.Highest >= seedrange.highest) then apply to all values
-     *  Logic is largely the same as the first until the map causes a split. 
-     *  Define a class to hold the seed range? Create a new one each time the map causes a split, could even be a tuple/array
      *  Do any of the seeds exist in multiple seed ranges?
+     *  Do we do each seed one at a time or do each calculation for all seed ranges and group them into larger groupings?
 
 
 
@@ -74,8 +73,11 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
 
         public List<Seed> allTestSeedsList { get; set; }
 
+        public List<(BigInteger Start, BigInteger Length)> seedRanges { get; set; }
 
-        public List<SeedRangeStructure> seedRanges { get; set; }
+        public List<(BigInteger Start, BigInteger Length)> testSeedRanges { get; set; }
+
+
 
 
         public Day05Part1Answer(Day05Input input, LogManager logManager, SeedService seedService)
@@ -125,6 +127,35 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
                 new Seed(13)
             };
             allTestSeedsList = seeds;
+        }
+
+        public void InitializeSeedRanges()
+        {
+            seedRanges = new List<(BigInteger Start, BigInteger Length)>
+            {
+                (4106085912, 135215567),
+                (529248892, 159537194),
+                (1281459911, 114322341),
+                (1857095529, 814584370),
+                (2999858074, 50388481),
+                (3362084117, 37744902),
+                (3471634344, 240133599),
+                (3737494864, 346615684),
+                (1585884643, 142273098),
+                (917169654, 286257440)
+            };
+        }
+
+        public void InitializeTestSeedRanges()
+        {
+            testSeedRanges = new List<(BigInteger Start, BigInteger Length)>
+            {
+                (79, 14),
+                (55, 13),
+                (82, 3),
+                (46, 10),
+                (35, 8)
+            };
         }
 
         public List<Seed> GetTestSeedList()
@@ -199,37 +230,35 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
 
 
 
-        public BigInteger CalculatePart2RangeForOneMap(MapType map, BigInteger startSeed, BigInteger endSeed, bool test)
+        public List<SeedRangeStructure>  CalculatePart2RangeForOneMap(MapType map, List<SeedRangeStructure> originalSeedRanges, bool test)
         {
-            BigInteger currentMinimum = BigInteger.MaxValue;
+            BigInteger currentMinimum = _day05Input.GetMaxValueFromMaps(_day05Input.AllMaps);
+
+            List<SeedRangeStructure> updatedSeedRanges = _seedService.UpdateAllPart2SeedRanges(originalSeedRanges);
 
             List<SeedRangeStructure> seedRanges = new List<SeedRangeStructure>();
 
 
             var mapString = test ? _day05Input.TestMaps[map] : _day05Input.AllMaps[map];
 
-            foreach(var splitValue in _day05Input.SplitMapValuesByLine(mapString)) 
+            foreach (var splitValue in _day05Input.SplitMapValuesByLine(mapString))
             {
                 BigInteger destinationStart, sourceStart, range;
                 _day05Input.ParseAlmanacNumbersFromLine(splitValue, out destinationStart, out sourceStart, out range);
+                BigInteger sourceEnd = _seedService.CalculateMaxSourceRange(sourceStart, range);
 
-                if(_seedService.Part2IsWithinRange(startSeed, endSeed, sourceStart, range))
+                foreach (var seedRange in updatedSeedRanges)
                 {
-                    break;
+                    if(_seedService.Part2IsWithinRange(seedRange.Start, seedRange.End, sourceStart, sourceEnd))
+                    {
+                        bool needsLeftMapped, needsRightMapped;
+                        _seedService.TESTPart2CalculateNewSeedRange(seedRange.Start, seedRange.End, sourceStart, sourceEnd, out needsLeftMapped, out needsRightMapped);
+
+                        
+                    }
+
                 }
-
-                BigInteger sourceEnd = startSeed + endSeed;
-
-                _seedService.Part2CalculateNewSeedRange(startSeed, endSeed, sourceStart, sourceEnd); 
-
             }
-
-
-
-            
-            
-
-
         }
 
 
