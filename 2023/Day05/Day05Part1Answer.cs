@@ -75,7 +75,7 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
 
         public List<(BigInteger Start, BigInteger Length)> seedRanges { get; set; }
 
-        public List<(BigInteger Start, BigInteger Length)> testSeedRanges { get; set; }
+        public List<BaseSeedStructure> testBaseRanges { get; set; }
 
 
 
@@ -146,24 +146,37 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
             };
         }
 
-        public void InitializeTestSeedRanges()
+        public void InitializeTestBaseSeedStructures()
         {
-            testSeedRanges = new List<(BigInteger Start, BigInteger Length)>
+            testBaseRanges = new List<BaseSeedStructure>
             {
-                (79, 14),
-                (55, 13),
-                (82, 3),
-                (46, 10),
-                (35, 8)
+                new BaseSeedStructure(79, 14),
+                new BaseSeedStructure(55, 13),
+                new BaseSeedStructure(82, 3),
+                new BaseSeedStructure(46, 10),
+                new BaseSeedStructure(35, 8),
+
+                new BaseSeedStructure(50, 20),     // Range fully inside a mapping
+                new BaseSeedStructure(10, 20),     // Range completely before mapping
+                new BaseSeedStructure(200, 20),    // Range completely after mapping
+                new BaseSeedStructure(40, 20),     // Range overlapping start of mapping
+                new BaseSeedStructure(65, 20),     // Range overlapping end of mapping
+                new BaseSeedStructure(150, 1),     // Single point test
+                new BaseSeedStructure(45, 75),     // Range encompassing multiple mappings
+                new BaseSeedStructure(290, 30),    // Range spanning consecutive mappings
+                new BaseSeedStructure(580, 50)     // Range spanning multiple non-consecutive mappings
             };
+        }
+
+        public List<BaseSeedStructure> GetTestBaseRanges()
+        {
+            return testBaseRanges;
         }
 
         public List<Seed> GetTestSeedList()
         {
             return allTestSeedsList;
         }
-
-
 
         public List<Seed> GetSeedList()
         {
@@ -230,35 +243,82 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
 
 
 
-        public List<SeedRangeStructure>  CalculatePart2RangeForOneMap(MapType map, List<SeedRangeStructure> originalSeedRanges, bool test)
+        public List<SeedRangeStruct>  CalculatePart2RangeForOneMap(MapType map, List<BaseSeedStructure> originalSeedRanges, bool useTestMapStrings)
         {
+            List<SeedRangeStruct> allMappedSeedRanges = new List<SeedRangeStruct>();
             BigInteger currentMinimum = _day05Input.GetMaxValueFromMaps(_day05Input.AllMaps);
 
-            List<SeedRangeStructure> updatedSeedRanges = _seedService.UpdateAllPart2SeedRanges(originalSeedRanges);
 
-            List<SeedRangeStructure> seedRanges = new List<SeedRangeStructure>();
+            List<SeedRangeStruct> unSortedRanges = new List<SeedRangeStruct>();
 
 
-            var mapString = test ? _day05Input.TestMaps[map] : _day05Input.AllMaps[map];
+            var mapString = useTestMapStrings ? _day05Input.TestMaps[map] : _day05Input.AllMaps[map];
 
             foreach (var splitValue in _day05Input.SplitMapValuesByLine(mapString))
             {
-                BigInteger destinationStart, sourceStart, range;
+              
+
+                BigInteger destinationStart;
+                BigInteger sourceStart;
+                BigInteger range;
+
                 _day05Input.ParseAlmanacNumbersFromLine(splitValue, out destinationStart, out sourceStart, out range);
+
                 BigInteger sourceEnd = _seedService.CalculateMaxSourceRange(sourceStart, range);
 
-                foreach (var seedRange in updatedSeedRanges)
+                foreach (var seedRange in originalSeedRanges)
                 {
-                    if(_seedService.Part2IsWithinRange(seedRange.Start, seedRange.End, sourceStart, sourceEnd))
+                    if (_seedService.Part2IsWithinRange(seedRange.Start, seedRange.End, sourceStart, sourceEnd))
                     {
-                        bool needsLeftMapped, needsRightMapped;
-                        _seedService.TESTPart2CalculateNewSeedRange(seedRange.Start, seedRange.End, sourceStart, sourceEnd, out needsLeftMapped, out needsRightMapped);
+                        BigInteger offSet = destinationStart - sourceStart;
 
-                        
+                        bool SeedStartInMapRange;
+                        bool SeedEndInMapRange;
+                        BigInteger newStart = 0;
+                        BigInteger newEnd = 0;
+
+                        _seedService.DetermineMapSides(seedRange.Start, seedRange.End, sourceStart, sourceEnd, out SeedStartInMapRange, out SeedEndInMapRange);
+
+                        _seedService.TESTPart2CalculateNewSeedRange(offSet, seedRange.Start, seedRange.End, sourceStart, sourceEnd, SeedStartInMapRange, SeedEndInMapRange, out newStart, out newEnd);
+
+                        // start/end calculations using Min/Max aren't being used
+
+                        if (SeedStartInMapRange && SeedEndInMapRange)
+                        {
+                            SeedRangeStruct newRange = new SeedRangeStruct()
+                            {
+                                Start = seedRange.Start + offSet,
+                                End = seedRange.End + offSet
+                            };
+                            unSortedRanges.Add(newRange);
+                            break;
+                        }
+
+                        if (SeedStartInMapRange && !SeedEndInMapRange)
+                        {
+                            SeedRangeStruct newRange = new SeedRangeStruct()
+                            {
+                                Start = seedRange.Start + offSet,
+                                End = sourceEnd
+                            };
+                            unSortedRanges.Add(newRange);
+                            break;
+                        }
+
+                        if (SeedEndInMapRange && !SeedStartInMapRange)
+                        {
+                            SeedRangeStruct newRange = new SeedRangeStruct()
+                            {
+                                Start = sourceStart,
+                                End = sourceEnd + offSet
+                            };
+                            unSortedRanges.Add(newRange);
+                        }     
                     }
-
+                    allMappedSeedRanges.AddRange(_seedService.SortSeedRanges(unSortedRanges));
                 }
             }
+            return allMappedSeedRanges;
         }
 
 

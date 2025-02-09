@@ -16,6 +16,7 @@
         WaterToLightTest,
         LightToTemperatureTest,
         TemperatureToHumidityTest,
-        HumidityToLocationTest
+        HumidityToLocationTest,
+        EdgeCases
     }
 }
