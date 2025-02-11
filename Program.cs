@@ -1,4 +1,5 @@
-﻿using AdventOfCode._2023.Day05.Day05Tests;
+﻿using AdventOfCode._2023.Day04.Day04Inputs;
+using AdventOfCode._2023.Day05.Day05Tests;
 using AdventOfCode._2023.Day05.DayFiveAnswer;
 using AdventOfCode._2023.Day05.DayFiveLogger;
 using AdventOfCode._2023.Day05.InputService.DayFiveInput;
@@ -23,15 +24,28 @@ namespace AdventOfCode.Program
             Day05Tests day05Test = new Day05Tests(logManager, day05Input, seedService);
 
             day05Ans.InitializeTestBaseSeedStructures();
+            day05Ans.InitializePart2QuestionTestSeeds();
+            day05Ans.InitializeSeedRanges();
 
-            List<BaseSeedStructure> baseSeeds = day05Ans.GetTestBaseRanges();
-            SortedDictionary<MapType, string> testMaps = day05Input.GetTestMaps();
 
 
-            day05Test.TestDetermineMapSides(baseSeeds, testMaps, MapType.EdgeCases);
+            SortedDictionary<MapType, string> QuestionTestMaps = new SortedDictionary<MapType, string>
+            {
+            [MapType.SeedToSoil] =
+                "50 98 2\n" +
+                "52 50 48",
+            };
 
-           
 
+
+            List < BaseSeedStruct> questionTestSeeds = day05Ans.ReturnPart2QuestionTestSeeds();
+            SortedDictionary<MapType, string> testMaps = day05Input.GetQuestionTestMaps();
+
+
+            BigInteger result = day05Ans.CalculateAllMapRanges(questionTestSeeds, QuestionTestMaps);
+
+            Console.WriteLine($"Result: {result}.");
+            
 
 
 

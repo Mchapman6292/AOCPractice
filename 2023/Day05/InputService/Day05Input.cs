@@ -4,6 +4,7 @@ using AdventOfCode._2023.Day05.LogManagers;
 using AdventOfCode._2023.Day05.MapTypes;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using System.Collections.Generic;
+using AdventOfCode._2023.Day05.SeedRangeStructures;
 
 namespace AdventOfCode._2023.Day05.InputService.DayFiveInput
 {
@@ -241,7 +242,7 @@ namespace AdventOfCode._2023.Day05.InputService.DayFiveInput
 
         };
 
-        public SortedDictionary<MapType, string> TestMaps { get; } = new SortedDictionary<MapType, string>
+        public SortedDictionary<MapType, string> QuestionTestMaps { get; } = new SortedDictionary<MapType, string>
         {
             [MapType.SeedToSoil] =
         "50 98 2\n" +
@@ -274,26 +275,9 @@ namespace AdventOfCode._2023.Day05.InputService.DayFiveInput
             [MapType.HumidityToLocation] =
         "60 56 37\n" +
         "56 93 4",
+        };
 
-            [MapType.EdgeCases] =
-        "50 45 30\n" +
-        "100 80 20\n" +
-        "200 190 20\n" +
-        "150 150 1\n" +
-        "60 55 10\n" +
-        "75 70 10\n" +
-        "100 90 30\n" +
-        "50 40 20\n" +
-        "200 195 10\n" +
-        "100 205 10\n" +
-        "300 290 10\n" +
-        "310 300 10\n" +
-        "400 380 10\n" +
-        "500 400 10\n" +
-        "600 580 20\n" +
-        "700 600 20\n" +
-        "800 620 1"
-    };
+ 
 
 
 
@@ -338,33 +322,29 @@ namespace AdventOfCode._2023.Day05.InputService.DayFiveInput
         }
 
 
-        public void ParseAlmanacNumbersFromLine(string line, out BigInteger destinationStart, out BigInteger sourceStart, out BigInteger range)
+        public MapValueStruct ParseMapStringToMapValueStruct(string line)
         {
-            destinationStart = 0;
-            sourceStart = 0;
-            range = 0;
-
+            BigInteger destinationStart = 0;
+            BigInteger sourceStart = 0;
+            BigInteger range = 0;
             string[] seedArray = line.Split(' ');
-
             if (seedArray.Length < 3)
             {
-                throw new ArgumentException($"Unable to parse 3 values in {nameof(ParseAlmanacNumbersFromLine)}. _day05Input: {line}");
+                throw new ArgumentException($"Unable to parse 3 values in {nameof(ParseMapStringToMapValueStruct)}. _day05Input: {line}");
             }
-
             if (!BigInteger.TryParse(seedArray[0], out destinationStart))
             {
-                throw new FormatException($"Failed to parse destinationStart: {seedArray[0]} in {nameof(ParseAlmanacNumbersFromLine)}");
+                throw new FormatException($"Failed to parse destinationStart: {seedArray[0]} in {nameof(ParseMapStringToMapValueStruct)}");
             }
-
             if (!BigInteger.TryParse(seedArray[1], out sourceStart))
             {
-                throw new FormatException($"Failed to parse sourceStart: {seedArray[1]} in {nameof(ParseAlmanacNumbersFromLine)}");
+                throw new FormatException($"Failed to parse sourceStart: {seedArray[1]} in {nameof(ParseMapStringToMapValueStruct)}");
             }
-
             if (!BigInteger.TryParse(seedArray[2], out range))
             {
-                throw new FormatException($"Failed to parse range: {seedArray[2]} in {nameof(ParseAlmanacNumbersFromLine)}");
+                throw new FormatException($"Failed to parse range: {seedArray[2]} in {nameof(ParseMapStringToMapValueStruct)}");
             }
+            return new MapValueStruct(destinationStart, sourceStart, range);
         }
 
 
@@ -391,9 +371,9 @@ namespace AdventOfCode._2023.Day05.InputService.DayFiveInput
             return AllMaps;
         }
 
-        public SortedDictionary<MapType, string> GetTestMaps()
+        public SortedDictionary<MapType, string> GetQuestionTestMaps()
         {
-            return TestMaps;
+            return QuestionTestMaps;
         }
 
 
@@ -407,7 +387,7 @@ namespace AdventOfCode._2023.Day05.InputService.DayFiveInput
                 foreach (string line in mapLines)
                 {
                     BigInteger destinationStart, sourceStart, range;
-                    ParseAlmanacNumbersFromLine(line, out destinationStart, out sourceStart, out range);
+                    ParseMapStringToBigInt(line, out destinationStart, out sourceStart, out range);
 
                     maxValue = BigInteger.Max(maxValue, destinationStart);
                     maxValue = BigInteger.Max(maxValue, sourceStart);

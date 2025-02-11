@@ -27,7 +27,7 @@ namespace AdventOfCode._2023.Day05.Day05Tests
 
 
 
-        public void TestDetermineMapSides(List<BaseSeedStructure> seedRanges, SortedDictionary<MapType, string> mapStrings, MapType mapType)
+        public void TestDetermineMapSides(List<BaseSeedStruct> seedRanges, SortedDictionary<MapType, string> mapStrings, MapType mapType)
         {
             List<string> splitMapValues = _day05Input.SplitMapValuesByLine(mapStrings[mapType]);
             foreach (var splitMapValue in splitMapValues)
@@ -35,7 +35,7 @@ namespace AdventOfCode._2023.Day05.Day05Tests
                 BigInteger destinationStart;
                 BigInteger sourceStart;
                 BigInteger range;
-                _day05Input.ParseAlmanacNumbersFromLine(splitMapValue, out destinationStart, out sourceStart, out range);
+                _day05Input.ParseMapStringToBigInt(splitMapValue, out destinationStart, out sourceStart, out range);
 
                 BigInteger sourceEnd = sourceStart + range - 1;
 
