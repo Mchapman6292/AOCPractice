@@ -26,7 +26,7 @@ namespace AdventOfCode._2023.Day05.Day05Tests
         }
 
 
-
+        /*
         public void TestDetermineMapSides(List<BaseSeedStruct> seedRanges, SortedDictionary<MapType, string> mapStrings, MapType mapType)
         {
             List<string> splitMapValues = _day05Input.SplitMapValuesByLine(mapStrings[mapType]);
@@ -57,6 +57,7 @@ namespace AdventOfCode._2023.Day05.Day05Tests
                 }
             }
         }
+        */
 
 
     }

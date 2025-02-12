@@ -186,6 +186,7 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
             return allSeedsList;
         }
 
+        /*
 
         public BigInteger CalculateForOneMap(MapType map, BigInteger startValue, bool test)
         {
@@ -211,6 +212,8 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
             return currentValue;
         }
 
+        
+
         public void CalculateForAllMaps(SortedDictionary<MapType, string> maps, Seed seed, bool test)
         {
             BigInteger currentValue = seed.StartValue;
@@ -221,6 +224,7 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
             }
         }
 
+        
         public BigInteger? CalculateForAllSeeds(SortedDictionary<MapType, string> maps, List<Seed> seeds, bool test)
         {
             foreach (Seed seed in seeds)
@@ -240,9 +244,9 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
 
             return lowestResult;
         }
+            */
 
-
-
+        /*
 
 
         /*
@@ -301,40 +305,57 @@ namespace AdventOfCode._2023.Day05.DayFiveAnswer
 
         public BigInteger CalculateAllMapRanges(List<BaseSeedStruct> originalSeedRanges, SortedDictionary<MapType, string> maps)
         {
+
             List<BigInteger> lowestTransformationValues = new List<BigInteger>();
 
-            /* Convert initial Values into seedRangeStruct, The range is already calculated in BaseSeedStruct creation but it is less confusing to just take the two values 
+            /* Convert initial Values into seedRangeStruct, The range is already calculated in BaseSeedStruct creation but it is less confusing to just take the two values
              * BaseSeedStruct Start & End = startSeed number and the already calculated Start + seedcount value*/
-           
+
             List<SeedRangeStruct> transformedOriginalRanges = _seedService.ConvertBaseSeedToSeedStruct(originalSeedRanges);
 
             //We create the list that holds the previous lines ranges, we then set this at the end of each line to the previous lines total ranges
             List<SeedRangeStruct> currentLineSeedRanges = new List<SeedRangeStruct>();
+
+            currentLineSeedRanges = transformedOriginalRanges;
 
             // This iterates over all of the values in each MapString, we still need to take the map string and parse the values from each line
             foreach (string fullMapString in maps.Values)
             {
                 var singleMapStringList = _day05Input.SplitMapValuesByLine(fullMapString).ToList();
 
-                foreach(string sinlgeMapString in singleMapStringList)
+                foreach (string sinlgeMapString in singleMapStringList)
                 {
-                    // Create a struct which holds all the values needed from the maps, the total range and offset is calculated by the struct upon creation.
-                    MapValueStruct currentMapValues = _day05Input.ParseMapStringToMapValueStruct(sinlgeMapString);
+                    // Create a list that holds the SeedRangeStruct for one line, once the line has finished we then assign this to curretLineSeedRanges to ensure only the updated SeedRanges are mapped.
+                    List<SeedRangeStruct> newLineRanges = new List<SeedRangeStruct>();
 
-                    foreach(SeedRangeStruct seedRange in currentLineSeedRanges)
+                    // Create a struct which holds all the values needed from the maps, the total range and offset is calculated by the struct upon creation.
+                    MapValueStruct currentMapValue = _day05Input.ParseMapStringToMapValueStruct(sinlgeMapString);
+
+                    // For each seed we then check which seed values are within the range and create the SeedRangeStructure using Part2CreateMappedSeedRangeStructure
+                    foreach (SeedRangeStruct currentSeedRange in currentLineSeedRanges)
                     {
                         bool seedStartInMapRange;
                         bool seedEndInMapRange;
 
-                        _seedService.Part2DetermineMapSides(seedRange, currentMapValues, out seedStartInMapRange, out seedEndInMapRange);
+                        _seedService.Part2DetermineMapSides(currentSeedRange, currentMapValue, out seedStartInMapRange, out seedEndInMapRange);
 
+                        List<SeedRangeStruct> rangesForOneSeedAndLine = _seedService.Part2CreateMappedSeedRangeStructure(currentSeedRange, currentMapValue, seedStartInMapRange, seedEndInMapRange);
+                        _day05Logger.Debug($"Created {rangesForOneSeedAndLine.Count} ranges");
+
+                        newLineRanges.AddRange(rangesForOneSeedAndLine);
+
+                        currentLineSeedRanges.Remove(currentSeedRange);
+                    }
+                    if(newLineRanges.Count > 0) 
+                    {
+                        var sortedRanges = _seedService.SortSeedRanges(newLineRanges);
+                        currentLineSeedRanges = sortedRanges;
                     }
                 }
             }
-
-
-
+            return currentLineSeedRanges.FirstOrDefault().Start;
         }
+
 
 
 

@@ -376,64 +376,63 @@ namespace AdventOfCode._2023.Day05.SeedManager.SeedServices
 
 
 
-
-        public List<SeedRangeStruct> TestCreateNewSeedRangesWithLogging(SeedRangeStruct originalSeed, BigInteger mapStart, BigInteger mapEnd, BigInteger offSet, bool SeedStartInMapRange, bool SeedEndInMapRange)
+        // We only need to find if either the SeedStart or Map start is less than the Seed End of EndMapValue. 
+        public List<SeedRangeStruct> Part2CreateMappedSeedRangeStructure(SeedRangeStruct currentSeedRange, MapValueStruct mapValue, bool SeedStartInMapRange, bool SeedEndInMapRange)
         {
-            _logger.Debug($"Original range: [{originalSeed.Start}-{originalSeed.End}] Map: [{mapStart}-{mapEnd}] Offset: {offSet}");
-
+            Console.WriteLine($"Original range: [{currentSeedRange.Start}-{currentSeedRange.End}] Map: [{mapValue.DestinationRange}-{mapValue.SourceRange}] Offset: {mapValue.OffSet}");
             List<SeedRangeStruct> newRanges = new List<SeedRangeStruct>();
-            if (SeedStartInMapRange && !SeedEndInMapRange)
+
+            // Calculate the intersection points between the current seed range and map range
+            BigInteger intersectionStart = BigInteger.Max(currentSeedRange.Start, mapValue.SourceRange);
+            BigInteger intersectionEnd = BigInteger.Min(currentSeedRange.End, mapValue.EndMapValue);
+
+            if (intersectionStart <= intersectionEnd)
             {
+                // If there are unmapped values before the intersection, create a range for them
+                if (currentSeedRange.Start < intersectionStart)
+                {
+                    SeedRangeStruct unmappedRange = new SeedRangeStruct()
+                    {
+                        Start = currentSeedRange.Start,
+                        End = intersectionStart - 1
+                    };
+                    newRanges.Add(unmappedRange);
+                    Console.WriteLine($"Split: Before intersection -> Unmapped[{unmappedRange.Start}-{unmappedRange.End}]");
+                }
+
+                // Create the mapped range for the intersection
                 SeedRangeStruct mappedRange = new SeedRangeStruct()
                 {
-                    Start = originalSeed.Start + offSet,
-                    End = mapEnd + offSet
-                };
-                SeedRangeStruct unmappedRange = new SeedRangeStruct()
-                {
-                    Start = mapEnd + 1,
-                    End = originalSeed.End
+                    Start = intersectionStart + mapValue.OffSet,
+                    End = intersectionEnd + mapValue.OffSet
                 };
                 newRanges.Add(mappedRange);
-                newRanges.Add(unmappedRange);
-                _logger.Debug($"Split: Start in range -> Mapped[{mappedRange.Start}-{mappedRange.End}] + Unmapped[{unmappedRange.Start}-{unmappedRange.End}]");
-            }
-            else if (SeedEndInMapRange && !SeedStartInMapRange)
-            {
-                SeedRangeStruct unmappedRange = new SeedRangeStruct()
+                Console.WriteLine($"Split: Intersection -> Mapped[{mappedRange.Start}-{mappedRange.End}]");
+
+                // If there are unmapped values after the intersection, create a range for them
+                if (currentSeedRange.End > intersectionEnd)
                 {
-                    Start = originalSeed.Start,
-                    End = mapStart - 1
-                };
-                SeedRangeStruct mappedRange = new SeedRangeStruct()
-                {
-                    Start = mapStart + offSet,
-                    End = originalSeed.End + offSet
-                };
-                newRanges.Add(unmappedRange);
-                newRanges.Add(mappedRange);
-                _logger.Debug($"Split: End in range -> Unmapped[{unmappedRange.Start}-{unmappedRange.End}] + Mapped[{mappedRange.Start}-{mappedRange.End}]");
-            }
-            else if (SeedStartInMapRange && SeedEndInMapRange)
-            {
-                SeedRangeStruct mappedRange = new SeedRangeStruct()
-                {
-                    Start = originalSeed.Start + offSet,
-                    End = originalSeed.End + offSet
-                };
-                newRanges.Add(mappedRange);
-                _logger.Debug($"Fully in range -> Mapped[{mappedRange.Start}-{mappedRange.End}]");
+                    SeedRangeStruct unmappedRange = new SeedRangeStruct()
+                    {
+                        Start = intersectionEnd + 1,
+                        End = currentSeedRange.End
+                    };
+                    newRanges.Add(unmappedRange);
+                    Console.WriteLine($"Split: After intersection -> Unmapped[{unmappedRange.Start}-{unmappedRange.End}]");
+                }
             }
             else
             {
+                // If there's no intersection, keep the original range unchanged
                 SeedRangeStruct unmappedRange = new SeedRangeStruct()
                 {
-                    Start = originalSeed.Start,
-                    End = originalSeed.End
+                    Start = currentSeedRange.Start,
+                    End = currentSeedRange.End
                 };
                 newRanges.Add(unmappedRange);
-                _logger.Debug($"Outside range -> Unmapped[{unmappedRange.Start}-{unmappedRange.End}]");
+                Console.WriteLine($"Outside range -> Unmapped[{unmappedRange.Start}-{unmappedRange.End}]");
             }
+
             return newRanges;
         }
 

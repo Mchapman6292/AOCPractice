@@ -23,6 +23,9 @@ namespace AdventOfCode.Program
             Day05Part1Answer day05Ans = new Day05Part1Answer(day05Input, logManager, seedService);
             Day05Tests day05Test = new Day05Tests(logManager, day05Input, seedService);
 
+
+            logger.Info("TEST MESSAGE - If you see this, logger is working");
+
             day05Ans.InitializeTestBaseSeedStructures();
             day05Ans.InitializePart2QuestionTestSeeds();
             day05Ans.InitializeSeedRanges();

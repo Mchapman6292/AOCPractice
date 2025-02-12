@@ -377,6 +377,7 @@ namespace AdventOfCode._2023.Day05.InputService.DayFiveInput
         }
 
 
+        /*
         public BigInteger GetMaxValueFromMaps(SortedDictionary<MapType, string> maps)
         {
             BigInteger maxValue = 0;
@@ -397,7 +398,7 @@ namespace AdventOfCode._2023.Day05.InputService.DayFiveInput
 
             return maxValue;
         }
-
+        */
 
 
 
